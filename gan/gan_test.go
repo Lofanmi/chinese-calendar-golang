@@ -54,3 +54,21 @@ func TestGan_Alias(t *testing.T) {
 		})
 	}
 }
+
+func TestGan_Order(t *testing.T) {
+	tests := []struct {
+		name string
+		gan  *Gan
+		want int64
+	}{
+		{"test_1", NewGan(minOrder()), 1},
+		{"test_2", NewGan(maxOrder()), 10},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := tt.gan.Order(); got != tt.want {
+				t.Errorf("Gan.Order() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}

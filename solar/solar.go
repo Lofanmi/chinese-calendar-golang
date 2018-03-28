@@ -27,9 +27,14 @@ func NewSolar(t *time.Time, loc *time.Location) *Solar {
 	var c *solarterm.Solarterm
 	p, n := solarterm.CalcSolarterm(t, loc)
 	if n.Index()-p.Index() == 1 {
-		if p.IsToday() {
+		if p.IsInDay(t) {
 			c = p
 			p = p.Prev()
+		}
+		if n.IsInDay(t) {
+			c = n
+			p = c.Prev()
+			n = c.Next()
 		}
 	}
 	return &Solar{
@@ -59,7 +64,7 @@ func (solar *Solar) WeekAlias() string {
 
 // Animal Animal
 func (solar *Solar) Animal() *animal.Animal {
-	return animal.NewAnimal(utils.OrderMod(int64(solar.t.Year()-4), 12))
+	return animal.NewAnimal(utils.OrderMod(int64(solar.t.Year()-3), 12))
 }
 
 // Constellation Constellation

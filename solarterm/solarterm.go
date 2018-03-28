@@ -666,7 +666,7 @@ func CalcSolarterm(t *time.Time, loc *time.Location) (p, n *Solarterm) {
 
 // SpringTimestamp SpringTimestamp
 func SpringTimestamp(year int64) (time int64) {
-	if year < SolartermFromYear || SolartermToYear > year {
+	if year < SolartermFromYear || year > SolartermToYear {
 		time = 0
 	} else {
 		time = getTimestamp(24*(year-SolartermFromYear) + 2)
@@ -711,13 +711,18 @@ func (solarterm *Solarterm) Next() *Solarterm {
 
 // IsToday IsToday
 func (solarterm *Solarterm) IsToday() bool {
-	t := solarterm.Time()
-
-	t1 := time.Date(t.Year(), t.Month(), t.Day(), 0, 0, 0, 0, solarterm.loc)
-	t2 := t1.Add(24 * time.Hour)
 	now := time.Now()
+	return solarterm.IsInDay(&now)
+}
 
-	return t1.Unix() <= now.Unix() && now.Unix() <= t2.Unix()
+// IsInDay IsInDay
+func (solarterm *Solarterm) IsInDay(t *time.Time) bool {
+	s := solarterm.Time()
+
+	t1 := time.Date(s.Year(), s.Month(), s.Day(), 0, 0, 0, 0, solarterm.loc)
+	t2 := t1.Add(24 * time.Hour)
+
+	return t1.Unix() <= t.Unix() && t.Unix() <= t2.Unix()
 }
 
 func getTimestamp(i int64) int64 {

@@ -54,3 +54,21 @@ func TestZhi_Alias(t *testing.T) {
 		})
 	}
 }
+
+func TestZhi_Order(t *testing.T) {
+	tests := []struct {
+		name string
+		zhi  *Zhi
+		want int64
+	}{
+		{"test_1", NewZhi(minOrder()), 1},
+		{"test_2", NewZhi(maxOrder()), 12},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := tt.zhi.Order(); got != tt.want {
+				t.Errorf("Zhi.Order() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}

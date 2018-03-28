@@ -157,3 +157,115 @@ func TestSolarterm_IsToday(t *testing.T) {
 		})
 	}
 }
+
+func TestSolarterm_Index(t *testing.T) {
+	tests := []struct {
+		name      string
+		solarterm *Solarterm
+		want      int64
+	}{
+		{"test_1", NewSolarterm(minIndex(), loc()), minIndex()},
+		{"test_2", NewSolarterm(maxIndex(), loc()), maxIndex()},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := tt.solarterm.Index(); got != tt.want {
+				t.Errorf("Solarterm.Index() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestSolarterm_Order(t *testing.T) {
+	tests := []struct {
+		name      string
+		solarterm *Solarterm
+		want      int64
+	}{
+		{"test_1", NewSolarterm(2, loc()), 1},
+		{"test_2", NewSolarterm(25, loc()), 24},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := tt.solarterm.Order(); got != tt.want {
+				t.Errorf("Solarterm.Order() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestSpringTimestamp(t *testing.T) {
+	type args struct {
+		year int64
+	}
+	tests := []struct {
+		name     string
+		args     args
+		wantTime int64
+	}{
+		{"zero_1", args{SolartermFromYear - 1}, 0},
+		{"zero_2", args{SolartermToYear + 1}, 0},
+		{"test_1", args{2017}, 1486136072},
+		{"test_2", args{2018}, 1517693315},
+		{"test_3", args{2019}, 1549250026},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if gotTime := SpringTimestamp(tt.args.year); gotTime != tt.wantTime {
+				t.Errorf("SpringTimestamp() = %v, want %v", gotTime, tt.wantTime)
+			}
+		})
+	}
+}
+
+func TestCalcSolarterm(t *testing.T) {
+	t1, _ := time.ParseInLocation("2006-01-02 15:04:05", "2018-02-05 00:00:00", loc())
+	t2, _ := time.ParseInLocation("2006-01-02 15:04:05", "2018-03-21 00:15:26", loc())
+	type args struct {
+		t   *time.Time
+		loc *time.Location
+	}
+	tests := []struct {
+		name  string
+		args  args
+		wantP *Solarterm
+		wantN *Solarterm
+	}{
+		{"test_1", args{&t1, loc()}, NewSolarterm(2738, loc()), NewSolarterm(2739, loc())},
+		{"test_2", args{&t2, loc()}, NewSolarterm(2740, loc()), NewSolarterm(2742, loc())},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			gotP, gotN := CalcSolarterm(tt.args.t, tt.args.loc)
+			if !reflect.DeepEqual(gotP, tt.wantP) {
+				t.Errorf("CalcSolarterm() gotP = %v, want %v", gotP, tt.wantP)
+			}
+			if !reflect.DeepEqual(gotN, tt.wantN) {
+				t.Errorf("CalcSolarterm() gotN = %v, want %v", gotN, tt.wantN)
+			}
+		})
+	}
+}
+
+func TestSolarterm_IsInDay(t *testing.T) {
+	now := time.Now()
+	type args struct {
+		t *time.Time
+	}
+	tests := []struct {
+		name      string
+		solarterm *Solarterm
+		args      args
+		want      bool
+	}{
+		{"test_1", NewSolarterm(minIndex(), loc()), args{&now}, false},
+		{"test_2", NewSolarterm(maxIndex(), loc()), args{&now}, false},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := tt.solarterm.IsInDay(tt.args.t); got != tt.want {
+				t.Errorf("Solarterm.IsInDay() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
