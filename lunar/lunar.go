@@ -57,7 +57,7 @@ var lunars = [...]int64{
 
 // NewLunar NewLunar
 func NewLunar(t *time.Time, loc *time.Location) *Lunar {
-	year, month, day, isLeap := FromSolarTimestamp(t.Unix())
+	year, month, day, isLeap := FromSolarTimestamp(t.Unix(), loc)
 	return &Lunar{
 		loc:         loc,
 		t:           t,
@@ -69,26 +69,17 @@ func NewLunar(t *time.Time, loc *time.Location) *Lunar {
 }
 
 // FromSolarTimestamp FromSolarTimestamp
-func FromSolarTimestamp(ts int64) (lunarYear, lunarMonth, lunarDay int64, lunarMonthIsLeap bool) {
+func FromSolarTimestamp(ts int64, loc *time.Location) (lunarYear, lunarMonth, lunarDay int64, lunarMonthIsLeap bool) {
 	var (
 		i, offset, leap         int64
 		daysOfYear, daysOfMonth int64
 		isLeap                  bool
 	)
-
-	t := time.Unix(ts, 0)
-
-	year := int64(t.Year())
-	month := int64(t.Month())
-	day := int64(t.Day())
-	hour := int64(t.Hour())
-	minute := int64(t.Minute())
-	second := int64(t.Second())
-
 	// 与 1900-01-31 相差多少天
-	t1, _ := time.Parse("2006-01-02 15:04:05", fmt.Sprintf("%d-%d-%d %d:%d:%d", year, month, day, hour, minute, second))
-	t2, _ := time.Parse("2006-01-02 15:04:05", "1900-01-31 00:00:00")
-	offset = (t2.Unix() - t1.Unix()) / 86400
+	t := time.Unix(ts, 0)
+	t1 := time.Date(t.Year(), t.Month(), t.Day(), 0, 0, 0, 0, loc)
+	t2 := time.Date(1900, 1, 31, 0, 0, 0, 0, loc)
+	offset = (t1.Unix() - t2.Unix()) / 86400
 
 	for i = 1900; i < 2101 && offset > 0; i++ {
 		daysOfYear = daysOfLunarYear(i)
@@ -148,10 +139,14 @@ func FromSolarTimestamp(ts int64) (lunarYear, lunarMonth, lunarDay int64, lunarM
 }
 
 // ToSolarTimestamp ToSolarTimestamp
-func ToSolarTimestamp(year, month, day, hour, minute, second int64, isLeapMonth bool) int64 {
+func ToSolarTimestamp(year, month, day, hour, minute, second int64, isLeapMonth bool, loc *time.Location) int64 {
 	var (
 		i, offset int64
 	)
+	// 参数合法性效验
+	if year < 1900 || year > 2100 {
+		return 0
+	}
 	// 参数区间 1900.1.31~2100.12.1
 	m := leapMonth(year)
 	// 传参要求计算该闰月公历 但该年得出的闰月与传参的月份并不同
@@ -169,7 +164,7 @@ func ToSolarTimestamp(year, month, day, hour, minute, second int64, isLeapMonth 
 		maxDays = leapDays(year)
 	}
 	// 参数合法性效验
-	if year < 1900 || year > 2100 || day > maxDays {
+	if day > maxDays {
 		return 0
 	}
 	// 计算农历的时间差
@@ -194,9 +189,10 @@ func ToSolarTimestamp(year, month, day, hour, minute, second int64, isLeapMonth 
 		offset += days
 	}
 	// 1900 年农历正月初一的公历时间为 1900年1月30日0时0分0秒 (该时间也是本农历的最开始起始点)
-	startTimestamp, _ := time.Parse("2006-01-02", "1900-01-30")
+	// startTimestamp := time.Date(1900, 1, 30, 0, 0, 0, 0, loc).Unix()
+	var startTimestamp int64 = -2206512000
 
-	return (offset+day)*86400 + startTimestamp.Unix()
+	return (offset+day)*86400 + startTimestamp + hour*3600 + minute*60 + second
 }
 
 // LeapMonth LeapMonth
@@ -223,7 +219,7 @@ func (lunar *Lunar) Animal() *animal.Animal {
 func (lunar *Lunar) YearAlias() string {
 	s := fmt.Sprintf("%d", lunar.year)
 	for i, replace := range numberAlias {
-		s = strings.Replace(s, string(i), replace, -1)
+		s = strings.Replace(s, fmt.Sprintf("%d", i), replace, -1)
 	}
 	return s
 }
@@ -270,7 +266,7 @@ func leapMonth(year int64) int64 {
 }
 
 func leapDays(year int64) (days int64) {
-	if leapMonth(year) != 0 {
+	if leapMonth(year) == 0 {
 		days = 0
 	} else if (lunars[year-1900] & 0x10000) != 0 {
 		days = 30
