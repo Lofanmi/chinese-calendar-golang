@@ -71,3 +71,38 @@ func (solar *Solar) Animal() *animal.Animal {
 func (solar *Solar) Constellation() *constellation.Constellation {
 	return constellation.NewConstellation(solar.t)
 }
+
+// GetYear GetYear
+func (solar *Solar) GetYear() int64 {
+	return int64(solar.t.Year())
+}
+
+// GetMonth GetMonth
+func (solar *Solar) GetMonth() int64 {
+	return int64(solar.t.Month())
+}
+
+// GetDay GetDay
+func (solar *Solar) GetDay() int64 {
+	return int64(solar.t.Day())
+}
+
+// GetHour GetHour
+func (solar *Solar) GetHour() int64 {
+	return int64(solar.t.Hour())
+}
+
+// GetMinute GetMinute
+func (solar *Solar) GetMinute() int64 {
+	return int64(solar.t.Minute())
+}
+
+// GetSecond GetSecond
+func (solar *Solar) GetSecond() int64 {
+	return int64(solar.t.Second())
+}
+
+// GetNanosecond GetNanosecond
+func (solar *Solar) GetNanosecond() int64 {
+	return int64(solar.t.Nanosecond())
+}

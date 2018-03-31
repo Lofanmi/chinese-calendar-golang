@@ -200,8 +200,8 @@ func (lunar *Lunar) LeapMonth() int64 {
 	return leapMonth(lunar.year)
 }
 
-// IsLeep IsLeep
-func (lunar *Lunar) IsLeep() bool {
+// IsLeap IsLeap
+func (lunar *Lunar) IsLeap() bool {
 	return lunar.LeapMonth() != 0
 }
 
@@ -246,6 +246,21 @@ func (lunar *Lunar) DayAlias() (alias string) {
 		alias = dateAlias[(int)(lunar.day/10)] + numberAlias[lunar.day%10]
 	}
 	return
+}
+
+// GetYear GetYear
+func (lunar *Lunar) GetYear() int64 {
+	return lunar.year
+}
+
+// GetMonth GetMonth
+func (lunar *Lunar) GetMonth() int64 {
+	return lunar.month
+}
+
+// GetDay GetDay
+func (lunar *Lunar) GetDay() int64 {
+	return lunar.day
 }
 
 func daysOfLunarYear(year int64) int64 {

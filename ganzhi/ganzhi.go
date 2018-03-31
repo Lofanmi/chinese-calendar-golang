@@ -32,7 +32,7 @@ func NewGanzhi(t *time.Time, loc *time.Location) *Ganzhi {
 	if !isSupported(year) {
 		return nil
 	}
-	if year < solarterm.SpringTimestamp(year) {
+	if t.Unix() < solarterm.SpringTimestamp(year) {
 		year--
 	}
 	yearGan := gan.NewGan(utils.OrderMod(year-3, 10))

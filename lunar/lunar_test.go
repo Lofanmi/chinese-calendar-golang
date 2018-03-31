@@ -146,7 +146,7 @@ func TestLunar_LeapMonth(t *testing.T) {
 	}
 }
 
-func TestLunar_IsLeep(t *testing.T) {
+func TestLunar_IsLeap(t *testing.T) {
 	t1 := time.Date(2018, 6, 1, 0, 0, 0, 0, loc())
 	t2 := time.Date(2017, 6, 1, 0, 0, 0, 0, loc())
 	tests := []struct {
@@ -159,8 +159,8 @@ func TestLunar_IsLeep(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := tt.lunar.IsLeep(); got != tt.want {
-				t.Errorf("Lunar.IsLeep() = %v, want %v", got, tt.want)
+			if got := tt.lunar.IsLeap(); got != tt.want {
+				t.Errorf("Lunar.IsLeap() = %v, want %v", got, tt.want)
 			}
 		})
 	}
