@@ -212,7 +212,7 @@ func (lunar *Lunar) IsLeapMonth() bool {
 
 // Animal Animal
 func (lunar *Lunar) Animal() *animal.Animal {
-	return animal.NewAnimal(utils.OrderMod(lunar.year-4, 12))
+	return animal.NewAnimal(utils.OrderMod(lunar.year-3, 12))
 }
 
 // YearAlias YearAlias

@@ -147,11 +147,11 @@ func TestByTimestamp(t *testing.T) {
 func TestCalendar_ToJSON(t *testing.T) {
 	t1, _ := time.ParseInLocation("2006-01-02 15:04:05", "2018-03-21 00:00:26", loc())
 	c1 := ByTimestamp(t1.Unix())
-	json1 := `{"ganzhi":{"animal":"狗","day":"壬子","day_order":49,"hour":"庚子","hour_order":37,"month":"乙卯","month_order":52,"year":"戊戌","year_order":35},"lunar":{"animal":"鸡","day":5,"day_alias":"初五","is_leap":false,"is_leap_month":false,"leap_month":0,"month":2,"month_alias":"二月","year":2018,"year_alias":"二零一八"},"solar":{"animal":"狗","constellation":"金牛","day":21,"hour":0,"is_leep":false,"minute":0,"month":3,"nanosecond":0,"second":26,"week_alias":"三","week_number":3,"year":2018}}`
+	json1 := `{"ganzhi":{"animal":"狗","day":"壬子","day_order":49,"hour":"庚子","hour_order":37,"month":"乙卯","month_order":52,"year":"戊戌","year_order":35},"lunar":{"animal":"狗","day":5,"day_alias":"初五","is_leap":false,"is_leap_month":false,"leap_month":0,"month":2,"month_alias":"二月","year":2018,"year_alias":"二零一八"},"solar":{"animal":"狗","constellation":"金牛","day":21,"hour":0,"is_leep":false,"minute":0,"month":3,"nanosecond":0,"second":26,"week_alias":"三","week_number":3,"year":2018}}`
 
 	t2, _ := time.ParseInLocation("2006-01-02 15:04:05", "2020-09-20 05:15:26", loc())
 	c2 := ByTimestamp(t2.Unix())
-	json2 := `{"ganzhi":{"animal":"鼠","day":"丙寅","day_order":3,"hour":"辛卯","hour_order":28,"month":"乙酉","month_order":22,"year":"庚子","year_order":37},"lunar":{"animal":"猪","day":4,"day_alias":"初四","is_leap":true,"is_leap_month":false,"leap_month":4,"month":8,"month_alias":"八月","year":2020,"year_alias":"二零二零"},"solar":{"animal":"鼠","constellation":"天秤","day":20,"hour":5,"is_leep":true,"minute":15,"month":9,"nanosecond":0,"second":26,"week_alias":"日","week_number":0,"year":2020}}`
+	json2 := `{"ganzhi":{"animal":"鼠","day":"丙寅","day_order":3,"hour":"辛卯","hour_order":28,"month":"乙酉","month_order":22,"year":"庚子","year_order":37},"lunar":{"animal":"鼠","day":4,"day_alias":"初四","is_leap":true,"is_leap_month":false,"leap_month":4,"month":8,"month_alias":"八月","year":2020,"year_alias":"二零二零"},"solar":{"animal":"鼠","constellation":"天秤","day":20,"hour":5,"is_leep":true,"minute":15,"month":9,"nanosecond":0,"second":26,"week_alias":"日","week_number":0,"year":2020}}`
 
 	tests := []struct {
 		name     string
@@ -170,7 +170,7 @@ func TestCalendar_ToJSON(t *testing.T) {
 				return
 			}
 			if !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("Calendar.ToJSON() = %s, want %v", got, tt.want)
+				t.Errorf("Calendar.ToJSON() = %s, want %s", got, tt.want)
 			}
 		})
 	}

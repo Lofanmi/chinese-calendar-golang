@@ -198,9 +198,9 @@ func TestLunar_Animal(t *testing.T) {
 		lunar *Lunar
 		want  *animal.Animal
 	}{
-		{"test_1", NewLunar(&t1, loc()), animal.NewAnimal(11 - 1)},
-		{"test_2", NewLunar(&t2, loc()), animal.NewAnimal(10 - 1)},
-		{"test_3", NewLunar(&t3, loc()), animal.NewAnimal(10 - 1)},
+		{"test_1", NewLunar(&t1, loc()), animal.NewAnimal(11)},
+		{"test_2", NewLunar(&t2, loc()), animal.NewAnimal(10)},
+		{"test_3", NewLunar(&t3, loc()), animal.NewAnimal(10)},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
