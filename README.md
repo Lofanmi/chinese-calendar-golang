@@ -1,5 +1,9 @@
 # chinese-calendar-golang
 
+[![Build Status](https://travis-ci.org/Lofanmi/chinese-calendar-golang.svg)](https://travis-ci.org/Lofanmi/chinese-calendar-golang)
+[![codecov](https://codecov.io/gh/Lofanmi/chinese-calendar-golang/branch/master/graph/badge.svg)](https://codecov.io/gh/Lofanmi/chinese-calendar-golang)
+[![Go Report Card](https://goreportcard.com/badge/github.com/Lofanmi/chinese-calendar-golang)](https://goreportcard.com/report/github.com/Lofanmi/chinese-calendar-golang)
+
 公历, 农历, 干支历转换包, 提供精确的日历转换.
 
 使用 `Go` 编写, 觉得好用的给 `Star` 呗~

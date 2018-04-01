@@ -1,0 +1,20 @@
+language: go
+sudo: false
+go:
+  - 1.6.x
+  - 1.7.x
+  - 1.8.x
+  - 1.9.x
+  - 1.10.x
+  - master
+
+git:
+  depth: 3
+
+go_import_path: github.com/Lofanmi/chinese-calendar-golang
+
+script:
+  - make test
+
+after_success:
+  - bash <(curl -s https://codecov.io/bash)
