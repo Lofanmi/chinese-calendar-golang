@@ -12,6 +12,8 @@
 
 真希望有人打钱打钱打钱给我啊哈哈哈哈!!!
 
+Go 1.7+测试通过, 1.6及以下应该也可以, 不过单元测试跑不了.
+
 # 如何安装
 
 ```bash
@@ -19,6 +21,14 @@ go get -u -v github.com/Lofanmi/chinese-calendar-golang
 ```
 
 # 用法
+
+```bash
+# 确保使用的是东八区(北京时间)
+export TZ=PRC
+
+# 查看时间
+date -R
+```
 
 ```go
 import (
