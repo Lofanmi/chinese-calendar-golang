@@ -1,7 +1,6 @@
 package constellation
 
 import (
-	"reflect"
 	"testing"
 	"time"
 )
@@ -38,7 +37,7 @@ func TestNewConstellation(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := NewConstellation(tt.args.t); !reflect.DeepEqual(got, tt.want) {
+			if got := NewConstellation(tt.args.t); got.Alias() != tt.want.Alias() {
 				t.Errorf("NewConstellation() = %v, want %v", got, tt.want)
 			}
 		})
