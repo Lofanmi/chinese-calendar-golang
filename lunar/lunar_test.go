@@ -233,6 +233,28 @@ func TestLunar_YearAlias(t *testing.T) {
 	}
 }
 
+func TestLunar_GetYear(t *testing.T) {
+	t1 := time.Date(2018, 5, 1, 0, 0, 0, 0, loc())
+	t2 := time.Date(2017, 6, 15, 0, 0, 0, 0, loc())
+	t3 := time.Date(2017, 8, 15, 0, 0, 0, 0, loc())
+	tests := []struct {
+		name  string
+		lunar *Lunar
+		want  int64
+	}{
+		{"test_1", NewLunar(&t1, loc()), 2018},
+		{"test_2", NewLunar(&t2, loc()), 2017},
+		{"test_3", NewLunar(&t3, loc()), 2017},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := tt.lunar.GetYear(); got != tt.want {
+				t.Errorf("Lunar.GetYear() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
 func TestLunar_MonthAlias(t *testing.T) {
 	t1 := time.Date(2018, 5, 1, 0, 0, 0, 0, loc())
 	t2 := time.Date(2017, 6, 15, 0, 0, 0, 0, loc())
@@ -250,6 +272,28 @@ func TestLunar_MonthAlias(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			if got := tt.lunar.MonthAlias(); got != tt.want {
 				t.Errorf("Lunar.MonthAlias() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestLunar_GetMonth(t *testing.T) {
+	t1 := time.Date(2018, 5, 1, 0, 0, 0, 0, loc())
+	t2 := time.Date(2017, 6, 15, 0, 0, 0, 0, loc())
+	t3 := time.Date(2017, 8, 15, 0, 0, 0, 0, loc())
+	tests := []struct {
+		name  string
+		lunar *Lunar
+		want  int64
+	}{
+		{"test_1", NewLunar(&t1, loc()), 3},
+		{"test_2", NewLunar(&t2, loc()), 5},
+		{"test_3", NewLunar(&t3, loc()), 6},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := tt.lunar.GetMonth(); got != tt.want {
+				t.Errorf("Lunar.GetMonth() = %v, want %v", got, tt.want)
 			}
 		})
 	}
@@ -274,6 +318,30 @@ func TestLunar_DayAlias(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			if gotAlias := tt.lunar.DayAlias(); gotAlias != tt.wantAlias {
 				t.Errorf("Lunar.DayAlias() = %v, want %v", gotAlias, tt.wantAlias)
+			}
+		})
+	}
+}
+
+func TestLunar_GetDay(t *testing.T) {
+	t1 := time.Date(2018, 5, 1, 0, 0, 0, 0, loc())
+	t2 := time.Date(2017, 6, 4, 0, 0, 0, 0, loc())
+	t3 := time.Date(2017, 6, 14, 0, 0, 0, 0, loc())
+	t4 := time.Date(2017, 8, 21, 0, 0, 0, 0, loc())
+	tests := []struct {
+		name      string
+		lunar     *Lunar
+		wantAlias int64
+	}{
+		{"test_1", NewLunar(&t1, loc()), 16},
+		{"test_2", NewLunar(&t2, loc()), 10},
+		{"test_3", NewLunar(&t3, loc()), 20},
+		{"test_33", NewLunar(&t4, loc()), 30},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if gotAlias := tt.lunar.GetDay(); gotAlias != tt.wantAlias {
+				t.Errorf("Lunar.GetDay() = %v, want %v", gotAlias, tt.wantAlias)
 			}
 		})
 	}
