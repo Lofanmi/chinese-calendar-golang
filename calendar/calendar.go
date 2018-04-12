@@ -9,7 +9,7 @@ import (
 	"github.com/Lofanmi/chinese-calendar-golang/solar"
 )
 
-// Calendar Calendar
+// Calendar 日历
 type Calendar struct {
 	loc    *time.Location
 	t      *time.Time
@@ -20,7 +20,7 @@ type Calendar struct {
 
 var location *time.Location
 
-// SetLocation SetLocation
+// SetLocation 设置时区
 func SetLocation(loc *time.Location) {
 	location = loc
 }
@@ -32,7 +32,7 @@ func loc() *time.Location {
 	return location
 }
 
-// ByTimestamp ByTimestamp
+// ByTimestamp 通过时间戳创建
 func ByTimestamp(ts int64) *Calendar {
 	l := loc()
 	t := time.Unix(ts, 0)
@@ -48,7 +48,7 @@ func ByTimestamp(ts int64) *Calendar {
 	}
 }
 
-// BySolar BySolar
+// BySolar 通过国历创建
 func BySolar(year, month, day, hour, minute, second int64) *Calendar {
 	t := time.Date(int(year),
 		time.Month(month),
@@ -62,13 +62,13 @@ func BySolar(year, month, day, hour, minute, second int64) *Calendar {
 	return ByTimestamp(t.Unix())
 }
 
-// ByLunar ByLunar
+// ByLunar 通过农历创建
 func ByLunar(year, month, day, hour, minute, second int64, isLeapMonth bool) *Calendar {
 	ts := lunar.ToSolarTimestamp(year, month, day, hour, minute, second, isLeapMonth, loc())
 	return ByTimestamp(ts)
 }
 
-// ToJSON ToJSON
+// ToJSON JSON输出
 func (calendar *Calendar) ToJSON() ([]byte, error) {
 	m := make(map[string]interface{})
 	m1 := make(map[string]interface{})

@@ -10,7 +10,7 @@ import (
 	"github.com/Lofanmi/chinese-calendar-golang/zhi"
 )
 
-// Ganzhi Ganzhi
+// Ganzhi 干支历
 type Ganzhi struct {
 	loc           *time.Location
 	t             *time.Time
@@ -26,7 +26,7 @@ type Ganzhi struct {
 	NextSolarterm *solarterm.Solarterm
 }
 
-// NewGanzhi NewGanzhi
+// NewGanzhi 创建干支历对象
 func NewGanzhi(t *time.Time, loc *time.Location) *Ganzhi {
 	year := int64(t.Year())
 	if !isSupported(year) {
@@ -75,47 +75,47 @@ func NewGanzhi(t *time.Time, loc *time.Location) *Ganzhi {
 	}
 }
 
-// Animal Animal
+// Animal 返回年份生肖
 func (gz *Ganzhi) Animal() *animal.Animal {
 	return animal.NewAnimal(gz.YearZhi.Order())
 }
 
-// YearGanzhiAlias YearGanzhiAlias
+// YearGanzhiAlias 年干支(甲子, 乙丑...)
 func (gz *Ganzhi) YearGanzhiAlias() string {
 	return gz.YearGan.Alias() + gz.YearZhi.Alias()
 }
 
-// MonthGanzhiAlias MonthGanzhiAlias
+// MonthGanzhiAlias 月干支(甲子, 乙丑...)
 func (gz *Ganzhi) MonthGanzhiAlias() string {
 	return gz.MonthGan.Alias() + gz.MonthZhi.Alias()
 }
 
-// DayGanzhiAlias DayGanzhiAlias
+// DayGanzhiAlias 日干支(甲子, 乙丑...)
 func (gz *Ganzhi) DayGanzhiAlias() string {
 	return gz.DayGan.Alias() + gz.DayZhi.Alias()
 }
 
-// HourGanzhiAlias HourGanzhiAlias
+// HourGanzhiAlias 时干支(甲子, 乙丑...)
 func (gz *Ganzhi) HourGanzhiAlias() string {
 	return gz.HourGan.Alias() + gz.HourZhi.Alias()
 }
 
-// YearGanzhiOrder YearGanzhiOrder
+// YearGanzhiOrder 年干支六十甲子序数(1,2...)
 func (gz *Ganzhi) YearGanzhiOrder() int64 {
 	return ganzhiOrder(gz.YearGan.Order(), gz.YearZhi.Order())
 }
 
-// MonthGanzhiOrder MonthGanzhiOrder
+// MonthGanzhiOrder 月干支六十甲子序数(1,2...)
 func (gz *Ganzhi) MonthGanzhiOrder() int64 {
 	return ganzhiOrder(gz.MonthGan.Order(), gz.MonthZhi.Order())
 }
 
-// DayGanzhiOrder DayGanzhiOrder
+// DayGanzhiOrder 日干支六十甲子序数(1,2...)
 func (gz *Ganzhi) DayGanzhiOrder() int64 {
 	return ganzhiOrder(gz.DayGan.Order(), gz.DayZhi.Order())
 }
 
-// HourGanzhiOrder HourGanzhiOrder
+// HourGanzhiOrder 时干支六十甲子序数(1,2...)
 func (gz *Ganzhi) HourGanzhiOrder() int64 {
 	return ganzhiOrder(gz.HourGan.Order(), gz.HourZhi.Order())
 }

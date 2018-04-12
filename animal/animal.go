@@ -1,6 +1,6 @@
 package animal
 
-// Animal Animal
+// Animal 生肖
 type Animal struct {
 	order int64
 }
@@ -10,7 +10,7 @@ var animalAlias = [...]string{
 	"马", "羊", "猴", "鸡", "狗", "猪",
 }
 
-// NewAnimal NewAnimal
+// NewAnimal 创建生肖对象
 func NewAnimal(order int64) *Animal {
 	if !isSupported(order) {
 		return nil
@@ -18,7 +18,7 @@ func NewAnimal(order int64) *Animal {
 	return &Animal{order: order}
 }
 
-// Alias Alias
+// Alias 返回生肖名称(鼠牛虎...)
 func (animal *Animal) Alias() string {
 	return animalAlias[(animal.order-1)%12]
 }

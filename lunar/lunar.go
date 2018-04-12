@@ -9,7 +9,7 @@ import (
 	"github.com/Lofanmi/chinese-calendar-golang/utils"
 )
 
-// Lunar Lunar
+// Lunar 农历
 type Lunar struct {
 	loc              *time.Location
 	t                *time.Time
@@ -55,7 +55,7 @@ var lunars = [...]int64{
 	0x0d520, // 2100
 }
 
-// NewLunar NewLunar
+// NewLunar 创建农历对象
 func NewLunar(t *time.Time, loc *time.Location) *Lunar {
 	year, month, day, isLeap := FromSolarTimestamp(t.Unix(), loc)
 	return &Lunar{
@@ -68,7 +68,7 @@ func NewLunar(t *time.Time, loc *time.Location) *Lunar {
 	}
 }
 
-// FromSolarTimestamp FromSolarTimestamp
+// FromSolarTimestamp 通过时间戳创建
 func FromSolarTimestamp(ts int64, loc *time.Location) (lunarYear, lunarMonth, lunarDay int64, lunarMonthIsLeap bool) {
 	var (
 		i, offset, leap         int64
@@ -138,7 +138,7 @@ func FromSolarTimestamp(ts int64, loc *time.Location) (lunarYear, lunarMonth, lu
 	return
 }
 
-// ToSolarTimestamp ToSolarTimestamp
+// ToSolarTimestamp 转换为时间戳
 func ToSolarTimestamp(year, month, day, hour, minute, second int64, isLeapMonth bool, loc *time.Location) int64 {
 	var (
 		i, offset int64
@@ -195,27 +195,27 @@ func ToSolarTimestamp(year, month, day, hour, minute, second int64, isLeapMonth 
 	return (offset+day)*86400 + startTimestamp + hour*3600 + minute*60 + second
 }
 
-// LeapMonth LeapMonth
+// LeapMonth 获取闰月(0表示不闰, 5表示闰五月)
 func (lunar *Lunar) LeapMonth() int64 {
 	return leapMonth(lunar.year)
 }
 
-// IsLeap IsLeap
+// IsLeap 是否闰年
 func (lunar *Lunar) IsLeap() bool {
 	return lunar.LeapMonth() != 0
 }
 
-// IsLeapMonth IsLeapMonth
+// IsLeapMonth 是否闰月
 func (lunar *Lunar) IsLeapMonth() bool {
 	return lunar.monthIsLeap
 }
 
-// Animal Animal
+// Animal 返回年份生肖
 func (lunar *Lunar) Animal() *animal.Animal {
 	return animal.NewAnimal(utils.OrderMod(lunar.year-3, 12))
 }
 
-// YearAlias YearAlias
+// YearAlias 汉字表示年(二零一八)
 func (lunar *Lunar) YearAlias() string {
 	s := fmt.Sprintf("%d", lunar.year)
 	for i, replace := range numberAlias {
@@ -224,7 +224,7 @@ func (lunar *Lunar) YearAlias() string {
 	return s
 }
 
-// MonthAlias MonthAlias
+// MonthAlias 汉字表示月(八月, 闰六月)
 func (lunar *Lunar) MonthAlias() string {
 	pre := ""
 	if lunar.monthIsLeap {
@@ -233,7 +233,7 @@ func (lunar *Lunar) MonthAlias() string {
 	return pre + lunarMonthAlias[lunar.month-1] + "月"
 }
 
-// DayAlias DayAlias
+// DayAlias 汉字表示日(初一, 初十...)
 func (lunar *Lunar) DayAlias() (alias string) {
 	switch lunar.day {
 	case 10:
@@ -248,17 +248,17 @@ func (lunar *Lunar) DayAlias() (alias string) {
 	return
 }
 
-// GetYear GetYear
+// GetYear 年
 func (lunar *Lunar) GetYear() int64 {
 	return lunar.year
 }
 
-// GetMonth GetMonth
+// GetMonth 月
 func (lunar *Lunar) GetMonth() int64 {
 	return lunar.month
 }
 
-// GetDay GetDay
+// GetDay 日
 func (lunar *Lunar) GetDay() int64 {
 	return lunar.day
 }

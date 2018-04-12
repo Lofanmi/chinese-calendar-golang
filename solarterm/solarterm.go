@@ -6,16 +6,16 @@ import (
 	"github.com/Lofanmi/chinese-calendar-golang/utils"
 )
 
-// Solarterm Solarterm
+// Solarterm 节气
 type Solarterm struct {
 	loc   *time.Location
 	index int64
 }
 
-// SolartermFromYear SolartermFromYear
+// SolartermFromYear 支持的最早年份
 const SolartermFromYear = 1904
 
-// SolartermToYear SolartermToYear
+// SolartermToYear 支持的最晚年份
 const SolartermToYear = 2024
 
 var solartermTimestamp = [...]int64{
@@ -633,7 +633,7 @@ var solartermAlias = [...]string{
 	"寒露", "霜降", "立冬", "小雪", "大雪", "冬至",
 }
 
-// NewSolarterm NewSolarterm
+// NewSolarterm 创建节气对象
 func NewSolarterm(index int64, loc *time.Location) *Solarterm {
 	if !isSupported(index) {
 		return nil
@@ -641,7 +641,7 @@ func NewSolarterm(index int64, loc *time.Location) *Solarterm {
 	return &Solarterm{loc: loc, index: index}
 }
 
-// CalcSolarterm CalcSolarterm
+// CalcSolarterm 计算节气区间
 func CalcSolarterm(t *time.Time, loc *time.Location) (p, n *Solarterm) {
 	var prev, next int64
 	prev = 0
@@ -664,7 +664,7 @@ func CalcSolarterm(t *time.Time, loc *time.Location) (p, n *Solarterm) {
 	return
 }
 
-// SpringTimestamp SpringTimestamp
+// SpringTimestamp 获取指定年份立春的时间
 func SpringTimestamp(year int64) (time int64) {
 	if year < SolartermFromYear || year > SolartermToYear {
 		time = 0
@@ -674,48 +674,48 @@ func SpringTimestamp(year int64) (time int64) {
 	return
 }
 
-// Alias Alias
+// Alias 返回节气名称(立春雨水...)
 func (solarterm *Solarterm) Alias() string {
 	return solartermAlias[solarterm.index%24]
 }
 
-// Index Index
+// Index 返回节气在索引表的索引
 func (solarterm *Solarterm) Index() int64 {
 	return solarterm.index
 }
 
-// Order Order
+// Order 返回节气序数(12...)
 func (solarterm *Solarterm) Order() int64 {
 	return utils.OrderMod(solarterm.index+24-1, 24)
 }
 
-// Timestamp Timestamp
+// Timestamp 返回当前节气的时间戳
 func (solarterm *Solarterm) Timestamp() int64 {
 	return getTimestamp(solarterm.index)
 }
 
-// Time Time
+// Time 根据节气时间戳获取time.Time对象
 func (solarterm *Solarterm) Time() time.Time {
 	return time.Unix(solarterm.Timestamp(), 0)
 }
 
-// Prev Prev
+// Prev 上一个节气
 func (solarterm *Solarterm) Prev() *Solarterm {
 	return NewSolarterm(solarterm.index-1, solarterm.loc)
 }
 
-// Next Next
+// Next 下一个节气
 func (solarterm *Solarterm) Next() *Solarterm {
 	return NewSolarterm(solarterm.index+1, solarterm.loc)
 }
 
-// IsToday IsToday
+// IsToday 该节气是否为今天
 func (solarterm *Solarterm) IsToday() bool {
 	now := time.Now()
 	return solarterm.IsInDay(&now)
 }
 
-// IsInDay IsInDay
+// IsInDay 查询是否为某一天为当前的节气
 func (solarterm *Solarterm) IsInDay(t *time.Time) bool {
 	s := solarterm.Time()
 

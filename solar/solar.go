@@ -9,7 +9,7 @@ import (
 	"github.com/Lofanmi/chinese-calendar-golang/utils"
 )
 
-// Solar Solar
+// Solar 公历
 type Solar struct {
 	loc              *time.Location
 	t                *time.Time
@@ -22,7 +22,7 @@ var weekAlias = [...]string{
 	"日", "一", "二", "三", "四", "五", "六",
 }
 
-// NewSolar NewSolar
+// NewSolar 创建公历对象
 func NewSolar(t *time.Time, loc *time.Location) *Solar {
 	var c *solarterm.Solarterm
 	p, n := solarterm.CalcSolarterm(t, loc)
@@ -46,63 +46,63 @@ func NewSolar(t *time.Time, loc *time.Location) *Solar {
 	}
 }
 
-// IsLeep IsLeep
+// IsLeep 是否为闰年
 func (solar *Solar) IsLeep() bool {
 	year := solar.t.Year()
 	return year%4 == 0 && year%100 != 0 || year%400 == 0
 }
 
-// WeekNumber WeekNumber
+// WeekNumber 返回当前周次(周日为0, 周一为1...)
 func (solar *Solar) WeekNumber() int64 {
 	return int64(solar.t.Weekday())
 }
 
-// WeekAlias WeekAlias
+// WeekAlias 返回当前周次(日, 一...)
 func (solar *Solar) WeekAlias() string {
 	return weekAlias[solar.WeekNumber()]
 }
 
-// Animal Animal
+// Animal 返回年份生肖
 func (solar *Solar) Animal() *animal.Animal {
 	return animal.NewAnimal(utils.OrderMod(int64(solar.t.Year()-3), 12))
 }
 
-// Constellation Constellation
+// Constellation 返回星座
 func (solar *Solar) Constellation() *constellation.Constellation {
 	return constellation.NewConstellation(solar.t)
 }
 
-// GetYear GetYear
+// GetYear 年
 func (solar *Solar) GetYear() int64 {
 	return int64(solar.t.Year())
 }
 
-// GetMonth GetMonth
+// GetMonth 月
 func (solar *Solar) GetMonth() int64 {
 	return int64(solar.t.Month())
 }
 
-// GetDay GetDay
+// GetDay 日
 func (solar *Solar) GetDay() int64 {
 	return int64(solar.t.Day())
 }
 
-// GetHour GetHour
+// GetHour 时
 func (solar *Solar) GetHour() int64 {
 	return int64(solar.t.Hour())
 }
 
-// GetMinute GetMinute
+// GetMinute 分
 func (solar *Solar) GetMinute() int64 {
 	return int64(solar.t.Minute())
 }
 
-// GetSecond GetSecond
+// GetSecond 秒
 func (solar *Solar) GetSecond() int64 {
 	return int64(solar.t.Second())
 }
 
-// GetNanosecond GetNanosecond
+// GetNanosecond 毫秒
 func (solar *Solar) GetNanosecond() int64 {
 	return int64(solar.t.Nanosecond())
 }
