@@ -11,36 +11,19 @@ import (
 
 // Calendar 日历
 type Calendar struct {
-	loc    *time.Location
 	t      *time.Time
 	Solar  *solar.Solar
 	Lunar  *lunar.Lunar
 	Ganzhi *ganzhi.Ganzhi
 }
 
-var location *time.Location
-
-// SetLocation 设置时区
-func SetLocation(loc *time.Location) {
-	location = loc
-}
-
-func loc() *time.Location {
-	if location == nil {
-		location, _ = time.LoadLocation("PRC")
-	}
-	return location
-}
-
 // ByTimestamp 通过时间戳创建
 func ByTimestamp(ts int64) *Calendar {
-	l := loc()
 	t := time.Unix(ts, 0)
-	sc := solar.NewSolar(&t, l)
-	lc := lunar.NewLunar(&t, l)
-	gz := ganzhi.NewGanzhi(&t, l)
+	sc := solar.NewSolar(&t)
+	lc := lunar.NewLunar(&t)
+	gz := ganzhi.NewGanzhi(&t)
 	return &Calendar{
-		loc:    l,
 		t:      &t,
 		Solar:  sc,
 		Lunar:  lc,
@@ -57,14 +40,14 @@ func BySolar(year, month, day, hour, minute, second int64) *Calendar {
 		int(minute),
 		int(second),
 		0,
-		loc(),
+		time.Local,
 	)
 	return ByTimestamp(t.Unix())
 }
 
 // ByLunar 通过农历创建
 func ByLunar(year, month, day, hour, minute, second int64, isLeapMonth bool) *Calendar {
-	ts := lunar.ToSolarTimestamp(year, month, day, hour, minute, second, isLeapMonth, loc())
+	ts := lunar.ToSolarTimestamp(year, month, day, hour, minute, second, isLeapMonth)
 	return ByTimestamp(ts)
 }
 
@@ -115,4 +98,11 @@ func (calendar *Calendar) ToJSON() ([]byte, error) {
 	m["ganzhi"] = m3
 
 	return json.Marshal(m)
+}
+
+// Equals 判断两个对象是否相同
+func (calendar *Calendar) Equals(b *Calendar) bool {
+	return calendar.Ganzhi.Equals(b.Ganzhi) &&
+		calendar.Lunar.Equals(b.Lunar) &&
+		calendar.Solar.Equals(b.Solar)
 }

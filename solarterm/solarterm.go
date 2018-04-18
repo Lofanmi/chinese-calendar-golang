@@ -8,7 +8,6 @@ import (
 
 // Solarterm 节气
 type Solarterm struct {
-	loc   *time.Location
 	index int64
 }
 
@@ -634,15 +633,15 @@ var solartermAlias = [...]string{
 }
 
 // NewSolarterm 创建节气对象
-func NewSolarterm(index int64, loc *time.Location) *Solarterm {
+func NewSolarterm(index int64) *Solarterm {
 	if !isSupported(index) {
 		return nil
 	}
-	return &Solarterm{loc: loc, index: index}
+	return &Solarterm{index}
 }
 
 // CalcSolarterm 计算节气区间
-func CalcSolarterm(t *time.Time, loc *time.Location) (p, n *Solarterm) {
+func CalcSolarterm(t *time.Time) (p, n *Solarterm) {
 	var prev, next int64
 	prev = 0
 	next = lenTimestamp() - 1
@@ -659,8 +658,8 @@ func CalcSolarterm(t *time.Time, loc *time.Location) (p, n *Solarterm) {
 	if ts == getTimestamp(prev) && prev-1 >= 0 {
 		prev--
 	}
-	p = NewSolarterm(prev, loc)
-	n = NewSolarterm(next, loc)
+	p = NewSolarterm(prev)
+	n = NewSolarterm(next)
 	return
 }
 
@@ -672,6 +671,11 @@ func SpringTimestamp(year int64) (time int64) {
 		time = getTimestamp(24*(year-SolartermFromYear) + 2)
 	}
 	return
+}
+
+// Equals 返回两个对象是否相同
+func (solarterm *Solarterm) Equals(b *Solarterm) bool {
+	return solarterm.index == b.index
 }
 
 // Alias 返回节气名称(立春雨水...)
@@ -701,12 +705,12 @@ func (solarterm *Solarterm) Time() time.Time {
 
 // Prev 上一个节气
 func (solarterm *Solarterm) Prev() *Solarterm {
-	return NewSolarterm(solarterm.index-1, solarterm.loc)
+	return NewSolarterm(solarterm.index - 1)
 }
 
 // Next 下一个节气
 func (solarterm *Solarterm) Next() *Solarterm {
-	return NewSolarterm(solarterm.index+1, solarterm.loc)
+	return NewSolarterm(solarterm.index + 1)
 }
 
 // IsToday 该节气是否为今天
@@ -719,7 +723,7 @@ func (solarterm *Solarterm) IsToday() bool {
 func (solarterm *Solarterm) IsInDay(t *time.Time) bool {
 	s := solarterm.Time()
 
-	t1 := time.Date(s.Year(), s.Month(), s.Day(), 0, 0, 0, 0, solarterm.loc)
+	t1 := time.Date(s.Year(), s.Month(), s.Day(), 0, 0, 0, 0, time.Local)
 	t2 := t1.Add(24 * time.Hour)
 
 	return t1.Unix() <= t.Unix() && t.Unix() <= t2.Unix()

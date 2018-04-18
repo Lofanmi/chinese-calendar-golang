@@ -11,7 +11,6 @@ import (
 
 // Lunar 农历
 type Lunar struct {
-	loc              *time.Location
 	t                *time.Time
 	year, month, day int64
 	monthIsLeap      bool
@@ -56,10 +55,9 @@ var lunars = [...]int64{
 }
 
 // NewLunar 创建农历对象
-func NewLunar(t *time.Time, loc *time.Location) *Lunar {
-	year, month, day, isLeap := FromSolarTimestamp(t.Unix(), loc)
+func NewLunar(t *time.Time) *Lunar {
+	year, month, day, isLeap := FromSolarTimestamp(t.Unix())
 	return &Lunar{
-		loc:         loc,
 		t:           t,
 		year:        year,
 		month:       month,
@@ -69,7 +67,7 @@ func NewLunar(t *time.Time, loc *time.Location) *Lunar {
 }
 
 // FromSolarTimestamp 通过时间戳创建
-func FromSolarTimestamp(ts int64, loc *time.Location) (lunarYear, lunarMonth, lunarDay int64, lunarMonthIsLeap bool) {
+func FromSolarTimestamp(ts int64) (lunarYear, lunarMonth, lunarDay int64, lunarMonthIsLeap bool) {
 	var (
 		i, offset, leap         int64
 		daysOfYear, daysOfMonth int64
@@ -77,8 +75,8 @@ func FromSolarTimestamp(ts int64, loc *time.Location) (lunarYear, lunarMonth, lu
 	)
 	// 与 1900-01-31 相差多少天
 	t := time.Unix(ts, 0)
-	t1 := time.Date(t.Year(), t.Month(), t.Day(), 0, 0, 0, 0, loc)
-	t2 := time.Date(1900, 1, 31, 0, 0, 0, 0, loc)
+	t1 := time.Date(t.Year(), t.Month(), t.Day(), 0, 0, 0, 0, time.Local)
+	t2 := time.Date(1900, 1, 31, 0, 0, 0, 0, time.Local)
 	offset = (t1.Unix() - t2.Unix()) / 86400
 
 	for i = 1900; i < 2101 && offset > 0; i++ {
@@ -139,7 +137,7 @@ func FromSolarTimestamp(ts int64, loc *time.Location) (lunarYear, lunarMonth, lu
 }
 
 // ToSolarTimestamp 转换为时间戳
-func ToSolarTimestamp(year, month, day, hour, minute, second int64, isLeapMonth bool, loc *time.Location) int64 {
+func ToSolarTimestamp(year, month, day, hour, minute, second int64, isLeapMonth bool) int64 {
 	var (
 		i, offset int64
 	)
@@ -189,7 +187,7 @@ func ToSolarTimestamp(year, month, day, hour, minute, second int64, isLeapMonth 
 		offset += days
 	}
 	// 1900 年农历正月初一的公历时间为 1900年1月30日0时0分0秒 (该时间也是本农历的最开始起始点)
-	// startTimestamp := time.Date(1900, 1, 30, 0, 0, 0, 0, loc).Unix()
+	// startTimestamp := time.Date(1900, 1, 30, 0, 0, 0, 0, time.Local).Unix()
 	var startTimestamp int64 = -2206512000
 
 	return (offset+day)*86400 + startTimestamp + hour*3600 + minute*60 + second
@@ -261,6 +259,14 @@ func (lunar *Lunar) GetMonth() int64 {
 // GetDay 日
 func (lunar *Lunar) GetDay() int64 {
 	return lunar.day
+}
+
+// Equals 返回两个对象是否相同
+func (lunar *Lunar) Equals(b *Lunar) bool {
+	return lunar.GetYear() == b.GetYear() &&
+		lunar.GetMonth() == b.GetMonth() &&
+		lunar.GetDay() == b.GetDay() &&
+		lunar.IsLeapMonth() == b.IsLeapMonth()
 }
 
 func daysOfLunarYear(year int64) int64 {

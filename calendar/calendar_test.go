@@ -14,23 +14,15 @@ var equals = func(a, b *Calendar) bool {
 	if a == nil {
 		return b == nil
 	}
-	// TODO...
-	// 后续把 Solar, Solar, Ganzhi 都抽取一个 equal 出来, 这样比对就方便多了...
-	return a.Ganzhi.YearGan.Order() == b.Ganzhi.YearGan.Order() &&
-		a.Ganzhi.YearZhi.Order() == b.Ganzhi.YearZhi.Order() &&
-		a.Ganzhi.MonthGan.Order() == b.Ganzhi.MonthGan.Order() &&
-		a.Ganzhi.MonthZhi.Order() == b.Ganzhi.MonthZhi.Order() &&
-		a.Ganzhi.DayGan.Order() == b.Ganzhi.DayGan.Order() &&
-		a.Ganzhi.DayZhi.Order() == b.Ganzhi.DayZhi.Order() &&
-		a.Ganzhi.HourGan.Order() == b.Ganzhi.HourGan.Order() &&
-		a.Ganzhi.HourZhi.Order() == b.Ganzhi.HourZhi.Order() &&
-		a.Ganzhi.PrevSolarterm.Order() == b.Ganzhi.PrevSolarterm.Order() &&
-		a.Ganzhi.NextSolarterm.Order() == b.Ganzhi.NextSolarterm.Order()
+	if b == nil {
+		return a == nil
+	}
+	return a.Equals(b)
 }
 
 func TestBySolar(t *testing.T) {
-	t1, _ := time.ParseInLocation("2006-01-02 15:04:05", "2018-03-21 00:00:26", loc())
-	t2, _ := time.ParseInLocation("2006-01-02 15:04:05", "2018-03-21 00:15:26", loc())
+	t1 := time.Date(2018, 3, 21, 0, 0, 26, 0, time.Local)
+	t2 := time.Date(2018, 3, 21, 0, 15, 26, 0, time.Local)
 	type args struct {
 		year   int64
 		month  int64
@@ -45,18 +37,16 @@ func TestBySolar(t *testing.T) {
 		want *Calendar
 	}{
 		{"test_1", args{2018, 3, 21, 0, 0, 26}, &Calendar{
-			loc:    loc(),
 			t:      &t1,
-			Solar:  solar.NewSolar(&t1, loc()),
-			Lunar:  lunar.NewLunar(&t1, loc()),
-			Ganzhi: ganzhi.NewGanzhi(&t1, loc()),
+			Solar:  solar.NewSolar(&t1),
+			Lunar:  lunar.NewLunar(&t1),
+			Ganzhi: ganzhi.NewGanzhi(&t1),
 		}},
 		{"test_2", args{2018, 3, 21, 0, 15, 26}, &Calendar{
-			loc:    loc(),
 			t:      &t2,
-			Solar:  solar.NewSolar(&t2, loc()),
-			Lunar:  lunar.NewLunar(&t2, loc()),
-			Ganzhi: ganzhi.NewGanzhi(&t2, loc()),
+			Solar:  solar.NewSolar(&t2),
+			Lunar:  lunar.NewLunar(&t2),
+			Ganzhi: ganzhi.NewGanzhi(&t2),
 		}},
 	}
 	for _, tt := range tests {
@@ -69,8 +59,8 @@ func TestBySolar(t *testing.T) {
 }
 
 func TestByLunar(t *testing.T) {
-	t1 := time.Date(2017, 8, 15, 12, 0, 0, 0, loc())
-	t2 := time.Date(2018, 3, 30, 23, 11, 30, 0, loc())
+	t1 := time.Date(2017, 8, 15, 12, 0, 0, 0, time.Local)
+	t2 := time.Date(2018, 3, 30, 23, 11, 30, 0, time.Local)
 	type args struct {
 		year        int64
 		month       int64
@@ -86,18 +76,16 @@ func TestByLunar(t *testing.T) {
 		want *Calendar
 	}{
 		{"test_1", args{2017, 6, 24, 12, 0, 0, true}, &Calendar{
-			loc:    loc(),
 			t:      &t1,
-			Solar:  solar.NewSolar(&t1, loc()),
-			Lunar:  lunar.NewLunar(&t1, loc()),
-			Ganzhi: ganzhi.NewGanzhi(&t1, loc()),
+			Solar:  solar.NewSolar(&t1),
+			Lunar:  lunar.NewLunar(&t1),
+			Ganzhi: ganzhi.NewGanzhi(&t1),
 		}},
 		{"test_2", args{2018, 2, 14, 23, 11, 30, false}, &Calendar{
-			loc:    loc(),
 			t:      &t2,
-			Solar:  solar.NewSolar(&t2, loc()),
-			Lunar:  lunar.NewLunar(&t2, loc()),
-			Ganzhi: ganzhi.NewGanzhi(&t2, loc()),
+			Solar:  solar.NewSolar(&t2),
+			Lunar:  lunar.NewLunar(&t2),
+			Ganzhi: ganzhi.NewGanzhi(&t2),
 		}},
 	}
 	for _, tt := range tests {
@@ -110,8 +98,8 @@ func TestByLunar(t *testing.T) {
 }
 
 func TestByTimestamp(t *testing.T) {
-	t1, _ := time.ParseInLocation("2006-01-02 15:04:05", "2018-03-21 00:00:26", loc())
-	t2, _ := time.ParseInLocation("2006-01-02 15:04:05", "2018-03-21 00:15:26", loc())
+	t1 := time.Date(2018, 3, 21, 0, 0, 26, 0, time.Local)
+	t2 := time.Date(2018, 3, 21, 0, 15, 26, 0, time.Local)
 	type args struct {
 		ts int64
 	}
@@ -121,18 +109,16 @@ func TestByTimestamp(t *testing.T) {
 		want *Calendar
 	}{
 		{"test_1", args{t1.Unix()}, &Calendar{
-			loc:    loc(),
 			t:      &t1,
-			Solar:  solar.NewSolar(&t1, loc()),
-			Lunar:  lunar.NewLunar(&t1, loc()),
-			Ganzhi: ganzhi.NewGanzhi(&t1, loc()),
+			Solar:  solar.NewSolar(&t1),
+			Lunar:  lunar.NewLunar(&t1),
+			Ganzhi: ganzhi.NewGanzhi(&t1),
 		}},
 		{"test_2", args{t2.Unix()}, &Calendar{
-			loc:    loc(),
 			t:      &t2,
-			Solar:  solar.NewSolar(&t2, loc()),
-			Lunar:  lunar.NewLunar(&t2, loc()),
-			Ganzhi: ganzhi.NewGanzhi(&t2, loc()),
+			Solar:  solar.NewSolar(&t2),
+			Lunar:  lunar.NewLunar(&t2),
+			Ganzhi: ganzhi.NewGanzhi(&t2),
 		}},
 	}
 	for _, tt := range tests {
@@ -145,11 +131,11 @@ func TestByTimestamp(t *testing.T) {
 }
 
 func TestCalendar_ToJSON(t *testing.T) {
-	t1, _ := time.ParseInLocation("2006-01-02 15:04:05", "2018-03-21 00:00:26", loc())
+	t1 := time.Date(2018, 3, 21, 0, 0, 26, 0, time.Local)
 	c1 := ByTimestamp(t1.Unix())
 	json1 := `{"ganzhi":{"animal":"狗","day":"壬子","day_order":49,"hour":"庚子","hour_order":37,"month":"乙卯","month_order":52,"year":"戊戌","year_order":35},"lunar":{"animal":"狗","day":5,"day_alias":"初五","is_leap":false,"is_leap_month":false,"leap_month":0,"month":2,"month_alias":"二月","year":2018,"year_alias":"二零一八"},"solar":{"animal":"狗","constellation":"金牛","day":21,"hour":0,"is_leep":false,"minute":0,"month":3,"nanosecond":0,"second":26,"week_alias":"三","week_number":3,"year":2018}}`
 
-	t2, _ := time.ParseInLocation("2006-01-02 15:04:05", "2020-09-20 05:15:26", loc())
+	t2 := time.Date(2020, 9, 20, 5, 15, 26, 0, time.Local)
 	c2 := ByTimestamp(t2.Unix())
 	json2 := `{"ganzhi":{"animal":"鼠","day":"丙寅","day_order":3,"hour":"辛卯","hour_order":28,"month":"乙酉","month_order":22,"year":"庚子","year_order":37},"lunar":{"animal":"鼠","day":4,"day_alias":"初四","is_leap":true,"is_leap_month":false,"leap_month":4,"month":8,"month_alias":"八月","year":2020,"year_alias":"二零二零"},"solar":{"animal":"鼠","constellation":"天秤","day":20,"hour":5,"is_leep":true,"minute":15,"month":9,"nanosecond":0,"second":26,"week_alias":"日","week_number":0,"year":2020}}`
 
@@ -176,26 +162,26 @@ func TestCalendar_ToJSON(t *testing.T) {
 	}
 }
 
-func TestSetLocation(t *testing.T) {
+func TestCalendar_Equals(t *testing.T) {
+	t1 := time.Now().Unix()
+	t2 := time.Now().Add(24 * time.Hour).Unix()
 	type args struct {
-		loc *time.Location
+		t *time.Time
 	}
 	tests := []struct {
 		name string
-		args args
+		c    *Calendar
+		c2   *Calendar
+		want bool
 	}{
-		{"test", args{nil}},
+		{"test_1", ByTimestamp(t1), ByTimestamp(t1), true},
+		{"test_2", ByTimestamp(t1), ByTimestamp(t2), false},
 	}
-	_ = loc()
 	for _, tt := range tests {
-		if location == nil {
-			t.Errorf("SetLocation() failed")
-		}
 		t.Run(tt.name, func(t *testing.T) {
-			SetLocation(tt.args.loc)
+			if tt.c.Equals(tt.c2) != tt.want {
+				t.Errorf("Calendar.Equals() failed")
+			}
 		})
-		if location != nil {
-			t.Errorf("SetLocation() failed")
-		}
 	}
 }

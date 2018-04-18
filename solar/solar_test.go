@@ -10,66 +10,49 @@ import (
 	"github.com/Lofanmi/chinese-calendar-golang/solarterm"
 )
 
-var (
-	defaultLoc *time.Location
-)
-
-func loc() *time.Location {
-	if defaultLoc == nil {
-		defaultLoc, _ = time.LoadLocation("PRC")
-	}
-	return defaultLoc
-}
-
 func TestNewSolar(t *testing.T) {
-	t1, _ := time.ParseInLocation("2006-01-02 15:04:05", "2018-03-21 00:00:26", loc())
-	t2, _ := time.ParseInLocation("2006-01-02 15:04:05", "2018-03-21 00:15:26", loc())
-	t3, _ := time.ParseInLocation("2006-01-02 15:04:05", "2018-03-21 00:15:27", loc())
-	t4, _ := time.ParseInLocation("2006-01-02 15:04:05", "2018-03-21 00:16:26", loc())
-	t5, _ := time.ParseInLocation("2006-01-02 15:04:05", "2018-04-01 00:00:00", loc())
+	t1 := time.Date(2018, 3, 21, 0, 0, 26, 0, time.Local)
+	t2 := time.Date(2018, 3, 21, 0, 15, 26, 0, time.Local)
+	t3 := time.Date(2018, 3, 21, 0, 15, 27, 0, time.Local)
+	t4 := time.Date(2018, 3, 21, 0, 16, 26, 0, time.Local)
+	t5 := time.Date(2018, 4, 1, 0, 0, 0, 0, time.Local)
 	type args struct {
-		t   *time.Time
-		loc *time.Location
+		t *time.Time
 	}
 	tests := []struct {
 		name string
 		args args
 		want *Solar
 	}{
-		{"test_1", args{&t1, loc()}, &Solar{
-			loc:              loc(),
+		{"test_1", args{&t1}, &Solar{
 			t:                &t1,
-			CurrentSolarterm: solarterm.NewSolarterm(2741, loc()),
-			PrevSolarterm:    solarterm.NewSolarterm(2740, loc()),
-			NextSolarterm:    solarterm.NewSolarterm(2742, loc()),
+			CurrentSolarterm: solarterm.NewSolarterm(2741),
+			PrevSolarterm:    solarterm.NewSolarterm(2740),
+			NextSolarterm:    solarterm.NewSolarterm(2742),
 		}},
-		{"test_2", args{&t2, loc()}, &Solar{
-			loc:              loc(),
+		{"test_2", args{&t2}, &Solar{
 			t:                &t2,
-			CurrentSolarterm: solarterm.NewSolarterm(2741, loc()),
-			PrevSolarterm:    solarterm.NewSolarterm(2740, loc()),
-			NextSolarterm:    solarterm.NewSolarterm(2742, loc()),
+			CurrentSolarterm: solarterm.NewSolarterm(2741),
+			PrevSolarterm:    solarterm.NewSolarterm(2740),
+			NextSolarterm:    solarterm.NewSolarterm(2742),
 		}},
-		{"test_3", args{&t3, loc()}, &Solar{
-			loc:              loc(),
+		{"test_3", args{&t3}, &Solar{
 			t:                &t3,
-			CurrentSolarterm: solarterm.NewSolarterm(2741, loc()),
-			PrevSolarterm:    solarterm.NewSolarterm(2740, loc()),
-			NextSolarterm:    solarterm.NewSolarterm(2742, loc()),
+			CurrentSolarterm: solarterm.NewSolarterm(2741),
+			PrevSolarterm:    solarterm.NewSolarterm(2740),
+			NextSolarterm:    solarterm.NewSolarterm(2742),
 		}},
-		{"test_4", args{&t4, loc()}, &Solar{
-			loc:              loc(),
+		{"test_4", args{&t4}, &Solar{
 			t:                &t4,
-			CurrentSolarterm: solarterm.NewSolarterm(2741, loc()),
-			PrevSolarterm:    solarterm.NewSolarterm(2740, loc()),
-			NextSolarterm:    solarterm.NewSolarterm(2742, loc()),
+			CurrentSolarterm: solarterm.NewSolarterm(2741),
+			PrevSolarterm:    solarterm.NewSolarterm(2740),
+			NextSolarterm:    solarterm.NewSolarterm(2742),
 		}},
-		{"test_5", args{&t5, loc()}, &Solar{
-			loc:              loc(),
+		{"test_5", args{&t5}, &Solar{
 			t:                &t5,
 			CurrentSolarterm: nil,
-			PrevSolarterm:    solarterm.NewSolarterm(2741, loc()),
-			NextSolarterm:    solarterm.NewSolarterm(2742, loc()),
+			PrevSolarterm:    solarterm.NewSolarterm(2741),
+			NextSolarterm:    solarterm.NewSolarterm(2742),
 		}},
 	}
 	equal := func(a, b *Solar) (result bool) {
@@ -88,7 +71,7 @@ func TestNewSolar(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := NewSolar(tt.args.t, tt.args.loc); !equal(got, tt.want) {
+			if got := NewSolar(tt.args.t); !equal(got, tt.want) {
 				t.Errorf("NewSolar() = %v, want %v", got, tt.want)
 			}
 		})
@@ -96,15 +79,15 @@ func TestNewSolar(t *testing.T) {
 }
 
 func TestSolar_IsLeep(t *testing.T) {
-	t1, _ := time.ParseInLocation("2006-01-02 15:04:05", "2018-03-21 00:00:00", loc())
-	t2, _ := time.ParseInLocation("2006-01-02 15:04:05", "2020-03-21 00:00:00", loc())
+	t1 := time.Date(2018, 3, 21, 0, 0, 0, 0, time.Local)
+	t2 := time.Date(2020, 3, 21, 0, 1, 0, 0, time.Local)
 	tests := []struct {
 		name  string
 		solar *Solar
 		want  bool
 	}{
-		{"test_2018", NewSolar(&t1, loc()), false},
-		{"test_2020", NewSolar(&t2, loc()), true},
+		{"test_2018", NewSolar(&t1), false},
+		{"test_2020", NewSolar(&t2), true},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -116,15 +99,15 @@ func TestSolar_IsLeep(t *testing.T) {
 }
 
 func TestSolar_WeekNumber(t *testing.T) {
-	t1, _ := time.ParseInLocation("2006-01-02 15:04:05", "2018-03-21 00:00:00", loc())
-	t2, _ := time.ParseInLocation("2006-01-02 15:04:05", "2018-03-25 00:01:00", loc())
+	t1 := time.Date(2018, 3, 21, 0, 0, 0, 0, time.Local)
+	t2 := time.Date(2018, 3, 25, 0, 1, 0, 0, time.Local)
 	tests := []struct {
 		name  string
 		solar *Solar
 		want  int64
 	}{
-		{"test_1", NewSolar(&t1, loc()), 3},
-		{"test_2", NewSolar(&t2, loc()), 0},
+		{"test_1", NewSolar(&t1), 3},
+		{"test_2", NewSolar(&t2), 0},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -136,15 +119,15 @@ func TestSolar_WeekNumber(t *testing.T) {
 }
 
 func TestSolar_WeekAlias(t *testing.T) {
-	t1, _ := time.ParseInLocation("2006-01-02 15:04:05", "2018-03-21 00:00:00", loc())
-	t2, _ := time.ParseInLocation("2006-01-02 15:04:05", "2018-03-25 00:01:00", loc())
+	t1 := time.Date(2018, 3, 21, 0, 0, 0, 0, time.Local)
+	t2 := time.Date(2018, 3, 25, 0, 1, 0, 0, time.Local)
 	tests := []struct {
 		name  string
 		solar *Solar
 		want  string
 	}{
-		{"test_1", NewSolar(&t1, loc()), "三"},
-		{"test_2", NewSolar(&t2, loc()), "日"},
+		{"test_1", NewSolar(&t1), "三"},
+		{"test_2", NewSolar(&t2), "日"},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -156,15 +139,15 @@ func TestSolar_WeekAlias(t *testing.T) {
 }
 
 func TestSolar_Animal(t *testing.T) {
-	t1, _ := time.ParseInLocation("2006-01-02 15:04:05", "2018-03-21 00:00:00", loc())
-	t2, _ := time.ParseInLocation("2006-01-02 15:04:05", "2019-03-21 00:00:00", loc())
+	t1 := time.Date(2018, 3, 21, 0, 0, 0, 0, time.Local)
+	t2 := time.Date(2019, 3, 21, 0, 0, 0, 0, time.Local)
 	tests := []struct {
 		name  string
 		solar *Solar
 		want  *animal.Animal
 	}{
-		{"test_1", NewSolar(&t1, loc()), animal.NewAnimal(11)},
-		{"test_1", NewSolar(&t2, loc()), animal.NewAnimal(12)},
+		{"test_1", NewSolar(&t1), animal.NewAnimal(11)},
+		{"test_1", NewSolar(&t2), animal.NewAnimal(12)},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -176,15 +159,15 @@ func TestSolar_Animal(t *testing.T) {
 }
 
 func TestSolar_Constellation(t *testing.T) {
-	t1, _ := time.ParseInLocation("2006-01-02 15:04:05", "2018-03-21 00:00:00", loc())
-	t2, _ := time.ParseInLocation("2006-01-02 15:04:05", "2018-11-21 00:00:00", loc())
+	t1 := time.Date(2018, 3, 21, 0, 0, 0, 0, time.Local)
+	t2 := time.Date(2018, 11, 21, 0, 0, 0, 0, time.Local)
 	tests := []struct {
 		name  string
 		solar *Solar
 		want  *constellation.Constellation
 	}{
-		{"test_1", NewSolar(&t1, loc()), constellation.NewConstellation(&t1)},
-		{"test_2", NewSolar(&t2, loc()), constellation.NewConstellation(&t2)},
+		{"test_1", NewSolar(&t1), constellation.NewConstellation(&t1)},
+		{"test_2", NewSolar(&t2), constellation.NewConstellation(&t2)},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -196,15 +179,15 @@ func TestSolar_Constellation(t *testing.T) {
 }
 
 func TestSolar_GetYear(t *testing.T) {
-	t1, _ := time.ParseInLocation("2006-01-02 15:04:05", "2015-01-20 00:00:00", loc())
-	t2, _ := time.ParseInLocation("2006-01-02 15:04:05", "2018-11-21 00:00:00", loc())
+	t1 := time.Date(2015, 1, 20, 0, 0, 0, 0, time.Local)
+	t2 := time.Date(2018, 11, 21, 0, 0, 0, 0, time.Local)
 	tests := []struct {
 		name  string
 		solar *Solar
 		want  int64
 	}{
-		{"test_1", NewSolar(&t1, loc()), 2015},
-		{"test_2", NewSolar(&t2, loc()), 2018},
+		{"test_1", NewSolar(&t1), 2015},
+		{"test_2", NewSolar(&t2), 2018},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -216,15 +199,15 @@ func TestSolar_GetYear(t *testing.T) {
 }
 
 func TestSolar_GetMonth(t *testing.T) {
-	t1, _ := time.ParseInLocation("2006-01-02 15:04:05", "2015-01-20 00:00:00", loc())
-	t2, _ := time.ParseInLocation("2006-01-02 15:04:05", "2018-11-21 00:00:00", loc())
+	t1 := time.Date(2015, 1, 20, 0, 0, 0, 0, time.Local)
+	t2 := time.Date(2018, 11, 21, 0, 0, 0, 0, time.Local)
 	tests := []struct {
 		name  string
 		solar *Solar
 		want  int64
 	}{
-		{"test_1", NewSolar(&t1, loc()), 1},
-		{"test_2", NewSolar(&t2, loc()), 11},
+		{"test_1", NewSolar(&t1), 1},
+		{"test_2", NewSolar(&t2), 11},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -236,15 +219,15 @@ func TestSolar_GetMonth(t *testing.T) {
 }
 
 func TestSolar_GetDay(t *testing.T) {
-	t1, _ := time.ParseInLocation("2006-01-02 15:04:05", "2015-01-20 00:00:00", loc())
-	t2, _ := time.ParseInLocation("2006-01-02 15:04:05", "2018-11-21 00:00:00", loc())
+	t1 := time.Date(2015, 1, 20, 0, 0, 0, 0, time.Local)
+	t2 := time.Date(2018, 11, 21, 0, 0, 0, 0, time.Local)
 	tests := []struct {
 		name  string
 		solar *Solar
 		want  int64
 	}{
-		{"test_1", NewSolar(&t1, loc()), 20},
-		{"test_2", NewSolar(&t2, loc()), 21},
+		{"test_1", NewSolar(&t1), 20},
+		{"test_2", NewSolar(&t2), 21},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -256,15 +239,15 @@ func TestSolar_GetDay(t *testing.T) {
 }
 
 func TestSolar_GetHour(t *testing.T) {
-	t1, _ := time.ParseInLocation("2006-01-02 15:04:05", "2015-01-20 00:00:00", loc())
-	t2, _ := time.ParseInLocation("2006-01-02 15:04:05", "2018-11-21 00:00:00", loc())
+	t1 := time.Date(2015, 1, 20, 0, 0, 0, 0, time.Local)
+	t2 := time.Date(2018, 11, 21, 0, 0, 0, 0, time.Local)
 	tests := []struct {
 		name  string
 		solar *Solar
 		want  int64
 	}{
-		{"test_1", NewSolar(&t1, loc()), 0},
-		{"test_2", NewSolar(&t2, loc()), 0},
+		{"test_1", NewSolar(&t1), 0},
+		{"test_2", NewSolar(&t2), 0},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -276,15 +259,15 @@ func TestSolar_GetHour(t *testing.T) {
 }
 
 func TestSolar_GetMinute(t *testing.T) {
-	t1, _ := time.ParseInLocation("2006-01-02 15:04:05", "2015-01-20 00:00:00", loc())
-	t2, _ := time.ParseInLocation("2006-01-02 15:04:05", "2018-11-21 00:00:00", loc())
+	t1 := time.Date(2015, 1, 20, 0, 0, 0, 0, time.Local)
+	t2 := time.Date(2018, 11, 21, 0, 0, 0, 0, time.Local)
 	tests := []struct {
 		name  string
 		solar *Solar
 		want  int64
 	}{
-		{"test_1", NewSolar(&t1, loc()), 0},
-		{"test_2", NewSolar(&t2, loc()), 0},
+		{"test_1", NewSolar(&t1), 0},
+		{"test_2", NewSolar(&t2), 0},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -296,15 +279,15 @@ func TestSolar_GetMinute(t *testing.T) {
 }
 
 func TestSolar_GetSecond(t *testing.T) {
-	t1, _ := time.ParseInLocation("2006-01-02 15:04:05", "2015-01-20 00:00:00", loc())
-	t2, _ := time.ParseInLocation("2006-01-02 15:04:05", "2018-11-21 00:00:00", loc())
+	t1 := time.Date(2015, 1, 20, 0, 0, 0, 0, time.Local)
+	t2 := time.Date(2018, 11, 21, 0, 0, 0, 0, time.Local)
 	tests := []struct {
 		name  string
 		solar *Solar
 		want  int64
 	}{
-		{"test_1", NewSolar(&t1, loc()), 0},
-		{"test_2", NewSolar(&t2, loc()), 0},
+		{"test_1", NewSolar(&t1), 0},
+		{"test_2", NewSolar(&t2), 0},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -315,20 +298,44 @@ func TestSolar_GetSecond(t *testing.T) {
 	}
 }
 func TestSolar_GetNanosecond(t *testing.T) {
-	t1, _ := time.ParseInLocation("2006-01-02 15:04:05", "2015-01-20 00:00:00", loc())
-	t2, _ := time.ParseInLocation("2006-01-02 15:04:05", "2018-11-21 00:00:00", loc())
+	t1 := time.Date(2015, 1, 20, 0, 0, 0, 0, time.Local)
+	t2 := time.Date(2018, 11, 21, 0, 0, 0, 0, time.Local)
 	tests := []struct {
 		name  string
 		solar *Solar
 		want  int64
 	}{
-		{"test_1", NewSolar(&t1, loc()), 0},
-		{"test_2", NewSolar(&t2, loc()), 0},
+		{"test_1", NewSolar(&t1), 0},
+		{"test_2", NewSolar(&t2), 0},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			if got := tt.solar.GetNanosecond(); !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("Solar.GetNanosecond() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestSolar_Equals(t *testing.T) {
+	t1 := time.Now()
+	t2 := t1.Add(24 * time.Hour)
+	type args struct {
+		t *time.Time
+	}
+	tests := []struct {
+		name   string
+		solar  *Solar
+		solar2 *Solar
+		want   bool
+	}{
+		{"test_1", NewSolar(&t1), NewSolar(&t1), true},
+		{"test_2", NewSolar(&t1), NewSolar(&t2), false},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if tt.solar.Equals(tt.solar2) != tt.want {
+				t.Errorf("Solar.Equals() failed")
 			}
 		})
 	}

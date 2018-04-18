@@ -8,21 +8,9 @@ import (
 	"github.com/Lofanmi/chinese-calendar-golang/animal"
 )
 
-var (
-	defaultLoc *time.Location
-)
-
-func loc() *time.Location {
-	if defaultLoc == nil {
-		defaultLoc, _ = time.LoadLocation("PRC")
-	}
-	return defaultLoc
-}
-
 func TestFromSolarTimestamp(t *testing.T) {
 	type args struct {
-		ts  int64
-		loc *time.Location
+		ts int64
 	}
 	tests := []struct {
 		name                 string
@@ -32,12 +20,12 @@ func TestFromSolarTimestamp(t *testing.T) {
 		wantLunarDay         int64
 		wantLunarMonthIsLeap bool
 	}{
-		{"test_1", args{1502769600, loc()}, 2017, 6, 24, true},
-		{"test_2", args{1522422690, loc()}, 2018, 2, 14, false},
+		{"test_1", args{1502769600}, 2017, 6, 24, true},
+		{"test_2", args{1522422690}, 2018, 2, 14, false},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			gotLunarYear, gotLunarMonth, gotLunarDay, gotLunarMonthIsLeap := FromSolarTimestamp(tt.args.ts, tt.args.loc)
+			gotLunarYear, gotLunarMonth, gotLunarDay, gotLunarMonthIsLeap := FromSolarTimestamp(tt.args.ts)
 			if gotLunarYear != tt.wantLunarYear {
 				t.Errorf("FromSolarTimestamp() gotLunarYear = %v, want %v", gotLunarYear, tt.wantLunarYear)
 			}
@@ -63,25 +51,24 @@ func TestToSolarTimestamp(t *testing.T) {
 		minute      int64
 		second      int64
 		isLeapMonth bool
-		loc         *time.Location
 	}
 	tests := []struct {
 		name string
 		args args
 		want int64
 	}{
-		{"test_1", args{2017, 6, 24, 12, 0, 0, true, loc()}, 1502769600},
-		{"test_2", args{2018, 2, 14, 23, 11, 30, true, loc()}, 1522422690},
-		{"test_3", args{2018, 2, 14, 23, 11, 30, false, loc()}, 1522422690},
-		{"test_4", args{1900, 1, 14, 23, 11, 30, false, loc()}, 0},
-		{"test_5", args{2100, 12, 14, 23, 11, 30, false, loc()}, 0},
-		{"test_6", args{1900 - 1, 1, 14, 23, 11, 30, false, loc()}, 0},
-		{"test_7", args{2100 + 1, 12, 14, 23, 11, 30, false, loc()}, 0},
-		{"test_8", args{1900, 2, 100000, 23, 11, 30, false, loc()}, 0},
+		{"test_1", args{2017, 6, 24, 12, 0, 0, true}, 1502769600},
+		{"test_2", args{2018, 2, 14, 23, 11, 30, true}, 1522422690},
+		{"test_3", args{2018, 2, 14, 23, 11, 30, false}, 1522422690},
+		{"test_4", args{1900, 1, 14, 23, 11, 30, false}, 0},
+		{"test_5", args{2100, 12, 14, 23, 11, 30, false}, 0},
+		{"test_6", args{1900 - 1, 1, 14, 23, 11, 30, false}, 0},
+		{"test_7", args{2100 + 1, 12, 14, 23, 11, 30, false}, 0},
+		{"test_8", args{1900, 2, 100000, 23, 11, 30, false}, 0},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := ToSolarTimestamp(tt.args.year, tt.args.month, tt.args.day, tt.args.hour, tt.args.minute, tt.args.second, tt.args.isLeapMonth, tt.args.loc); got != tt.want {
+			if got := ToSolarTimestamp(tt.args.year, tt.args.month, tt.args.day, tt.args.hour, tt.args.minute, tt.args.second, tt.args.isLeapMonth); got != tt.want {
 				t.Errorf("ToSolarTimestamp() = %v, want %v", got, tt.want)
 			}
 		})
@@ -89,27 +76,24 @@ func TestToSolarTimestamp(t *testing.T) {
 }
 
 func TestNewLunar(t *testing.T) {
-	t1 := time.Date(2017, 8, 15, 12, 0, 0, 0, loc())
-	t2 := time.Date(2018, 3, 30, 23, 11, 30, 0, loc())
+	t1 := time.Date(2017, 8, 15, 12, 0, 0, 0, time.Local)
+	t2 := time.Date(2018, 3, 30, 23, 11, 30, 0, time.Local)
 	type args struct {
-		t   *time.Time
-		loc *time.Location
+		t *time.Time
 	}
 	tests := []struct {
 		name string
 		args args
 		want *Lunar
 	}{
-		{"test_1", args{&t1, loc()}, &Lunar{
-			loc:         loc(),
+		{"test_1", args{&t1}, &Lunar{
 			t:           &t1,
 			year:        2017,
 			month:       6,
 			day:         24,
 			monthIsLeap: true,
 		}},
-		{"test_2", args{&t2, loc()}, &Lunar{
-			loc:         loc(),
+		{"test_2", args{&t2}, &Lunar{
 			t:           &t2,
 			year:        2018,
 			month:       2,
@@ -119,7 +103,7 @@ func TestNewLunar(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := NewLunar(tt.args.t, tt.args.loc); !reflect.DeepEqual(got, tt.want) {
+			if got := NewLunar(tt.args.t); !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("NewLunar() = %v, want %v", got, tt.want)
 			}
 		})
@@ -127,15 +111,15 @@ func TestNewLunar(t *testing.T) {
 }
 
 func TestLunar_LeapMonth(t *testing.T) {
-	t1 := time.Date(2018, 6, 1, 0, 0, 0, 0, loc())
-	t2 := time.Date(2017, 6, 1, 0, 0, 0, 0, loc())
+	t1 := time.Date(2018, 6, 1, 0, 0, 0, 0, time.Local)
+	t2 := time.Date(2017, 6, 1, 0, 0, 0, 0, time.Local)
 	tests := []struct {
 		name  string
 		lunar *Lunar
 		want  int64
 	}{
-		{"test_1", NewLunar(&t1, loc()), 0},
-		{"test_2", NewLunar(&t2, loc()), 6},
+		{"test_1", NewLunar(&t1), 0},
+		{"test_2", NewLunar(&t2), 6},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -147,15 +131,15 @@ func TestLunar_LeapMonth(t *testing.T) {
 }
 
 func TestLunar_IsLeap(t *testing.T) {
-	t1 := time.Date(2018, 6, 1, 0, 0, 0, 0, loc())
-	t2 := time.Date(2017, 6, 1, 0, 0, 0, 0, loc())
+	t1 := time.Date(2018, 6, 1, 0, 0, 0, 0, time.Local)
+	t2 := time.Date(2017, 6, 1, 0, 0, 0, 0, time.Local)
 	tests := []struct {
 		name  string
 		lunar *Lunar
 		want  bool
 	}{
-		{"test_1", NewLunar(&t1, loc()), false},
-		{"test_2", NewLunar(&t2, loc()), true},
+		{"test_1", NewLunar(&t1), false},
+		{"test_2", NewLunar(&t2), true},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -167,17 +151,17 @@ func TestLunar_IsLeap(t *testing.T) {
 }
 
 func TestLunar_IsLeapMonth(t *testing.T) {
-	t1 := time.Date(2018, 5, 1, 0, 0, 0, 0, loc())
-	t2 := time.Date(2017, 6, 15, 0, 0, 0, 0, loc())
-	t3 := time.Date(2017, 8, 15, 0, 0, 0, 0, loc())
+	t1 := time.Date(2018, 5, 1, 0, 0, 0, 0, time.Local)
+	t2 := time.Date(2017, 6, 15, 0, 0, 0, 0, time.Local)
+	t3 := time.Date(2017, 8, 15, 0, 0, 0, 0, time.Local)
 	tests := []struct {
 		name  string
 		lunar *Lunar
 		want  bool
 	}{
-		{"test_1", NewLunar(&t1, loc()), false},
-		{"test_2", NewLunar(&t2, loc()), false},
-		{"test_3", NewLunar(&t3, loc()), true},
+		{"test_1", NewLunar(&t1), false},
+		{"test_2", NewLunar(&t2), false},
+		{"test_3", NewLunar(&t3), true},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -189,18 +173,18 @@ func TestLunar_IsLeapMonth(t *testing.T) {
 }
 
 func TestLunar_Animal(t *testing.T) {
-	t1 := time.Date(2018, 5, 1, 0, 0, 0, 0, loc())
-	t2 := time.Date(2017, 6, 15, 0, 0, 0, 0, loc())
-	t3 := time.Date(2017, 8, 15, 0, 0, 0, 0, loc())
+	t1 := time.Date(2018, 5, 1, 0, 0, 0, 0, time.Local)
+	t2 := time.Date(2017, 6, 15, 0, 0, 0, 0, time.Local)
+	t3 := time.Date(2017, 8, 15, 0, 0, 0, 0, time.Local)
 
 	tests := []struct {
 		name  string
 		lunar *Lunar
 		want  *animal.Animal
 	}{
-		{"test_1", NewLunar(&t1, loc()), animal.NewAnimal(11)},
-		{"test_2", NewLunar(&t2, loc()), animal.NewAnimal(10)},
-		{"test_3", NewLunar(&t3, loc()), animal.NewAnimal(10)},
+		{"test_1", NewLunar(&t1), animal.NewAnimal(11)},
+		{"test_2", NewLunar(&t2), animal.NewAnimal(10)},
+		{"test_3", NewLunar(&t3), animal.NewAnimal(10)},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -212,17 +196,17 @@ func TestLunar_Animal(t *testing.T) {
 }
 
 func TestLunar_YearAlias(t *testing.T) {
-	t1 := time.Date(2018, 5, 1, 0, 0, 0, 0, loc())
-	t2 := time.Date(2017, 6, 15, 0, 0, 0, 0, loc())
-	t3 := time.Date(2017, 8, 15, 0, 0, 0, 0, loc())
+	t1 := time.Date(2018, 5, 1, 0, 0, 0, 0, time.Local)
+	t2 := time.Date(2017, 6, 15, 0, 0, 0, 0, time.Local)
+	t3 := time.Date(2017, 8, 15, 0, 0, 0, 0, time.Local)
 	tests := []struct {
 		name  string
 		lunar *Lunar
 		want  string
 	}{
-		{"test_1", NewLunar(&t1, loc()), "二零一八"},
-		{"test_2", NewLunar(&t2, loc()), "二零一七"},
-		{"test_3", NewLunar(&t3, loc()), "二零一七"},
+		{"test_1", NewLunar(&t1), "二零一八"},
+		{"test_2", NewLunar(&t2), "二零一七"},
+		{"test_3", NewLunar(&t3), "二零一七"},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -234,17 +218,17 @@ func TestLunar_YearAlias(t *testing.T) {
 }
 
 func TestLunar_GetYear(t *testing.T) {
-	t1 := time.Date(2018, 5, 1, 0, 0, 0, 0, loc())
-	t2 := time.Date(2017, 6, 15, 0, 0, 0, 0, loc())
-	t3 := time.Date(2017, 8, 15, 0, 0, 0, 0, loc())
+	t1 := time.Date(2018, 5, 1, 0, 0, 0, 0, time.Local)
+	t2 := time.Date(2017, 6, 15, 0, 0, 0, 0, time.Local)
+	t3 := time.Date(2017, 8, 15, 0, 0, 0, 0, time.Local)
 	tests := []struct {
 		name  string
 		lunar *Lunar
 		want  int64
 	}{
-		{"test_1", NewLunar(&t1, loc()), 2018},
-		{"test_2", NewLunar(&t2, loc()), 2017},
-		{"test_3", NewLunar(&t3, loc()), 2017},
+		{"test_1", NewLunar(&t1), 2018},
+		{"test_2", NewLunar(&t2), 2017},
+		{"test_3", NewLunar(&t3), 2017},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -256,17 +240,17 @@ func TestLunar_GetYear(t *testing.T) {
 }
 
 func TestLunar_MonthAlias(t *testing.T) {
-	t1 := time.Date(2018, 5, 1, 0, 0, 0, 0, loc())
-	t2 := time.Date(2017, 6, 15, 0, 0, 0, 0, loc())
-	t3 := time.Date(2017, 8, 15, 0, 0, 0, 0, loc())
+	t1 := time.Date(2018, 5, 1, 0, 0, 0, 0, time.Local)
+	t2 := time.Date(2017, 6, 15, 0, 0, 0, 0, time.Local)
+	t3 := time.Date(2017, 8, 15, 0, 0, 0, 0, time.Local)
 	tests := []struct {
 		name  string
 		lunar *Lunar
 		want  string
 	}{
-		{"test_1", NewLunar(&t1, loc()), "三月"},
-		{"test_2", NewLunar(&t2, loc()), "五月"},
-		{"test_3", NewLunar(&t3, loc()), "闰六月"},
+		{"test_1", NewLunar(&t1), "三月"},
+		{"test_2", NewLunar(&t2), "五月"},
+		{"test_3", NewLunar(&t3), "闰六月"},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -278,17 +262,17 @@ func TestLunar_MonthAlias(t *testing.T) {
 }
 
 func TestLunar_GetMonth(t *testing.T) {
-	t1 := time.Date(2018, 5, 1, 0, 0, 0, 0, loc())
-	t2 := time.Date(2017, 6, 15, 0, 0, 0, 0, loc())
-	t3 := time.Date(2017, 8, 15, 0, 0, 0, 0, loc())
+	t1 := time.Date(2018, 5, 1, 0, 0, 0, 0, time.Local)
+	t2 := time.Date(2017, 6, 15, 0, 0, 0, 0, time.Local)
+	t3 := time.Date(2017, 8, 15, 0, 0, 0, 0, time.Local)
 	tests := []struct {
 		name  string
 		lunar *Lunar
 		want  int64
 	}{
-		{"test_1", NewLunar(&t1, loc()), 3},
-		{"test_2", NewLunar(&t2, loc()), 5},
-		{"test_3", NewLunar(&t3, loc()), 6},
+		{"test_1", NewLunar(&t1), 3},
+		{"test_2", NewLunar(&t2), 5},
+		{"test_3", NewLunar(&t3), 6},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -300,19 +284,19 @@ func TestLunar_GetMonth(t *testing.T) {
 }
 
 func TestLunar_DayAlias(t *testing.T) {
-	t1 := time.Date(2018, 5, 1, 0, 0, 0, 0, loc())
-	t2 := time.Date(2017, 6, 4, 0, 0, 0, 0, loc())
-	t3 := time.Date(2017, 6, 14, 0, 0, 0, 0, loc())
-	t4 := time.Date(2017, 8, 21, 0, 0, 0, 0, loc())
+	t1 := time.Date(2018, 5, 1, 0, 0, 0, 0, time.Local)
+	t2 := time.Date(2017, 6, 4, 0, 0, 0, 0, time.Local)
+	t3 := time.Date(2017, 6, 14, 0, 0, 0, 0, time.Local)
+	t4 := time.Date(2017, 8, 21, 0, 0, 0, 0, time.Local)
 	tests := []struct {
 		name      string
 		lunar     *Lunar
 		wantAlias string
 	}{
-		{"test_1", NewLunar(&t1, loc()), "十六"},
-		{"test_2", NewLunar(&t2, loc()), "初十"},
-		{"test_3", NewLunar(&t3, loc()), "二十"},
-		{"test_33", NewLunar(&t4, loc()), "三十"},
+		{"test_1", NewLunar(&t1), "十六"},
+		{"test_2", NewLunar(&t2), "初十"},
+		{"test_3", NewLunar(&t3), "二十"},
+		{"test_33", NewLunar(&t4), "三十"},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -324,19 +308,19 @@ func TestLunar_DayAlias(t *testing.T) {
 }
 
 func TestLunar_GetDay(t *testing.T) {
-	t1 := time.Date(2018, 5, 1, 0, 0, 0, 0, loc())
-	t2 := time.Date(2017, 6, 4, 0, 0, 0, 0, loc())
-	t3 := time.Date(2017, 6, 14, 0, 0, 0, 0, loc())
-	t4 := time.Date(2017, 8, 21, 0, 0, 0, 0, loc())
+	t1 := time.Date(2018, 5, 1, 0, 0, 0, 0, time.Local)
+	t2 := time.Date(2017, 6, 4, 0, 0, 0, 0, time.Local)
+	t3 := time.Date(2017, 6, 14, 0, 0, 0, 0, time.Local)
+	t4 := time.Date(2017, 8, 21, 0, 0, 0, 0, time.Local)
 	tests := []struct {
 		name      string
 		lunar     *Lunar
 		wantAlias int64
 	}{
-		{"test_1", NewLunar(&t1, loc()), 16},
-		{"test_2", NewLunar(&t2, loc()), 10},
-		{"test_3", NewLunar(&t3, loc()), 20},
-		{"test_33", NewLunar(&t4, loc()), 30},
+		{"test_1", NewLunar(&t1), 16},
+		{"test_2", NewLunar(&t2), 10},
+		{"test_3", NewLunar(&t3), 20},
+		{"test_33", NewLunar(&t4), 30},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -366,6 +350,30 @@ func Test_lunarDays(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			if gotDays := lunarDays(tt.args.year, tt.args.month); gotDays != tt.wantDays {
 				t.Errorf("lunarDays() = %v, want %v", gotDays, tt.wantDays)
+			}
+		})
+	}
+}
+
+func TestLunar_Equals(t *testing.T) {
+	t1 := time.Now()
+	t2 := t1.Add(24 * time.Hour)
+	type args struct {
+		t *time.Time
+	}
+	tests := []struct {
+		name   string
+		lunar  *Lunar
+		lunar2 *Lunar
+		want   bool
+	}{
+		{"test_1", NewLunar(&t1), NewLunar(&t1), true},
+		{"test_2", NewLunar(&t1), NewLunar(&t2), false},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if tt.lunar.Equals(tt.lunar2) != tt.want {
+				t.Errorf("Lunar.Equals() failed")
 			}
 		})
 	}

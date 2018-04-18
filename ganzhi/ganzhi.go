@@ -12,7 +12,6 @@ import (
 
 // Ganzhi 干支历
 type Ganzhi struct {
-	loc           *time.Location
 	t             *time.Time
 	YearGan       *gan.Gan
 	YearZhi       *zhi.Zhi
@@ -27,7 +26,7 @@ type Ganzhi struct {
 }
 
 // NewGanzhi 创建干支历对象
-func NewGanzhi(t *time.Time, loc *time.Location) *Ganzhi {
+func NewGanzhi(t *time.Time) *Ganzhi {
 	year := int64(t.Year())
 	if !isSupported(year) {
 		return nil
@@ -38,7 +37,7 @@ func NewGanzhi(t *time.Time, loc *time.Location) *Ganzhi {
 	yearGan := gan.NewGan(utils.OrderMod(year-3, 10))
 	yearZhi := zhi.NewZhi(utils.OrderMod(year-3, 12))
 
-	p, n := solarterm.CalcSolarterm(t, loc)
+	p, n := solarterm.CalcSolarterm(t)
 
 	i := p.Index()
 	if n.Index()-p.Index() == 2 {
@@ -49,7 +48,7 @@ func NewGanzhi(t *time.Time, loc *time.Location) *Ganzhi {
 	monthZhi := zhi.NewZhi(utils.OrderMod(i+2, 12))
 	monthGan := gan.NewGan(utils.OrderMod(i+yearGan.Order()*2, 10))
 
-	begin := time.Date(solarterm.SolartermFromYear, 1, 1, 0, 0, 0, 0, loc)
+	begin := time.Date(solarterm.SolartermFromYear, 1, 1, 0, 0, 0, 0, time.Local)
 	seconds := t.Sub(begin).Seconds()
 	dayOrder := utils.OrderMod(int64(seconds/86400)+31, 60)
 
@@ -60,7 +59,6 @@ func NewGanzhi(t *time.Time, loc *time.Location) *Ganzhi {
 	hourGan := gan.NewGan(utils.OrderMod(hourZhi.Order()-2+dayGan.Order()*2, 10))
 
 	return &Ganzhi{
-		loc:           loc,
 		t:             t,
 		YearGan:       yearGan,
 		YearZhi:       yearZhi,
@@ -118,6 +116,14 @@ func (gz *Ganzhi) DayGanzhiOrder() int64 {
 // HourGanzhiOrder 时干支六十甲子序数(1,2...)
 func (gz *Ganzhi) HourGanzhiOrder() int64 {
 	return ganzhiOrder(gz.HourGan.Order(), gz.HourZhi.Order())
+}
+
+// Equals 返回两个对象是否相同
+func (gz *Ganzhi) Equals(b *Ganzhi) bool {
+	return gz.YearGanzhiOrder() == b.YearGanzhiOrder() &&
+		gz.MonthGanzhiOrder() == b.MonthGanzhiOrder() &&
+		gz.DayGanzhiOrder() == b.DayGanzhiOrder() &&
+		gz.HourGanzhiOrder() == b.HourGanzhiOrder()
 }
 
 func isSupported(year int64) bool {

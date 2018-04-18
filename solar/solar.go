@@ -11,7 +11,6 @@ import (
 
 // Solar 公历
 type Solar struct {
-	loc              *time.Location
 	t                *time.Time
 	CurrentSolarterm *solarterm.Solarterm
 	PrevSolarterm    *solarterm.Solarterm
@@ -23,9 +22,9 @@ var weekAlias = [...]string{
 }
 
 // NewSolar 创建公历对象
-func NewSolar(t *time.Time, loc *time.Location) *Solar {
+func NewSolar(t *time.Time) *Solar {
 	var c *solarterm.Solarterm
-	p, n := solarterm.CalcSolarterm(t, loc)
+	p, n := solarterm.CalcSolarterm(t)
 	if n.Index()-p.Index() == 1 {
 		if p.IsInDay(t) {
 			c = p
@@ -38,7 +37,6 @@ func NewSolar(t *time.Time, loc *time.Location) *Solar {
 		}
 	}
 	return &Solar{
-		loc:              loc,
 		t:                t,
 		CurrentSolarterm: c,
 		PrevSolarterm:    p,
@@ -105,4 +103,15 @@ func (solar *Solar) GetSecond() int64 {
 // GetNanosecond 毫秒
 func (solar *Solar) GetNanosecond() int64 {
 	return int64(solar.t.Nanosecond())
+}
+
+// Equals 返回两个对象是否相同
+func (solar *Solar) Equals(b *Solar) bool {
+	return solar.GetYear() == b.GetYear() &&
+		solar.GetMonth() == b.GetMonth() &&
+		solar.GetDay() == b.GetDay() &&
+		solar.GetHour() == b.GetHour() &&
+		solar.GetMinute() == b.GetMinute() &&
+		solar.GetSecond() == b.GetSecond() &&
+		solar.GetNanosecond() == b.GetNanosecond()
 }
