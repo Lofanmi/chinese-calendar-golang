@@ -50,8 +50,8 @@ func TestConstellation_Alias(t *testing.T) {
 		constellation *Constellation
 		want          string
 	}{
-		{"test_1", NewConstellation(testTime1()), "水瓶"},
-		{"test_2", NewConstellation(testTime2()), "魔羯"},
+		{"test_1", NewConstellation(testTime1()), "摩羯"},
+		{"test_2", NewConstellation(testTime2()), "射手"},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
