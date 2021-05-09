@@ -28,59 +28,42 @@ func TestOrderMod(t *testing.T) {
 	}
 }
 
-func TestYear2AYear(t *testing.T) {
+func TestDD(t *testing.T) {
 	type args struct {
-		year string
+		jd float64
 	}
 	tests := []struct {
-		name    string
-		args    args
-		wantY   int
-		wantErr bool
+		name   string
+		args   args
+		want_Y int
+		want_M int
+		want_D int
+		want_h int
+		want_m int
+		want_s int
 	}{
-		{"(empty)", args{year: ""}, 0, true},
-		{"2021", args{year: "2021"}, 2021, false},
-		{"b2021", args{year: "b2021"}, -2020, false},
-		{"*2021", args{year: "*2021"}, -2020, false},
-		{"BC2021", args{year: "BC2021"}, -2020, false},
-		{"BC2021-", args{year: "BC2021-"}, 0, true},
-		{"BC-2021", args{year: "BC-2021"}, -10000, true},
-		{"B9999", args{year: "B9999"}, -9998, true},
-		{"20210", args{year: "20210"}, 20210, true},
+		{"2018-02-04 05:28:29", args{2458153.72812377}, 2018, 2, 4, 5, 28, 29},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			gotY, err := Year2AYear(tt.args.year)
-			if (err != nil) != tt.wantErr {
-				t.Errorf("Year2AYear() error = %v, wantErr %v", err, tt.wantErr)
-				return
+			got_Y, got_M, got_D, got_h, got_m, got_s := DD(tt.args.jd)
+			if got_Y != tt.want_Y {
+				t.Errorf("DD() got_Y = %v, want %v", got_Y, tt.want_Y)
 			}
-			if gotY != tt.wantY {
-				t.Errorf("Year2AYear() gotY = %v, want %v", gotY, tt.wantY)
+			if got_M != tt.want_M {
+				t.Errorf("DD() got_M = %v, want %v", got_M, tt.want_M)
 			}
-		})
-	}
-}
-
-func TestJD(t *testing.T) {
-	type args struct {
-		yy int
-		mm int
-		dd int
-	}
-	tests := []struct {
-		name string
-		args args
-		want float64
-	}{
-		{"1900-01-02", args{1900,1,2}, 2415021.5},
-		{"2020-05-02", args{2020,5,2}, 2458971.5},
-		{"2021-02-02", args{2021,2,2}, 2459247.5},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			if got := JD(tt.args.yy, tt.args.mm, tt.args.dd); got != tt.want {
-				t.Errorf("JD() = %v, want %v", got, tt.want)
+			if got_D != tt.want_D {
+				t.Errorf("DD() got_D = %v, want %v", got_D, tt.want_D)
+			}
+			if got_h != tt.want_h {
+				t.Errorf("DD() got_h = %v, want %v", got_h, tt.want_h)
+			}
+			if got_m != tt.want_m {
+				t.Errorf("DD() got_m = %v, want %v", got_m, tt.want_m)
+			}
+			if got_s != tt.want_s {
+				t.Errorf("DD() got_s = %v, want %v", got_s, tt.want_s)
 			}
 		})
 	}

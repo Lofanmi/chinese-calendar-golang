@@ -11,7 +11,7 @@ func minIndex() int64 {
 }
 
 func maxIndex() int64 {
-	return lenTimestamp() - 1
+	return lenJ2000() - 1
 }
 
 func TestNewSolarterm(t *testing.T) {
@@ -193,9 +193,9 @@ func TestSpringTimestamp(t *testing.T) {
 	}{
 		{"zero_1", args{SolartermFromYear - 1}, 0},
 		{"zero_2", args{SolartermToYear + 1}, 0},
-		{"test_1", args{2017}, 1486136072},
-		{"test_2", args{2018}, 1517693315},
-		{"test_3", args{2019}, 1549250026},
+		{"test_1", args{2017}, 1486136044},
+		{"test_2", args{2018}, 1517693309},
+		{"test_3", args{2019}, 1549250060},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -208,7 +208,7 @@ func TestSpringTimestamp(t *testing.T) {
 
 func TestCalcSolarterm(t *testing.T) {
 	t1 := time.Date(2018, 2, 5, 0, 0, 0, 0, time.Local)
-	t2 := time.Date(2018, 3, 21, 0, 15, 26, 0, time.Local)
+	t2 := time.Date(2018, 3, 21, 0, 15, 28, 0, time.Local)
 	type args struct {
 		t *time.Time
 	}
