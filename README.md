@@ -24,7 +24,7 @@ go mod download
 go build
 ```
 
-如果您还在使用 GOPATH, 别玩了 `go get`:
+如果您还在使用 GOPATH, 别忘了 `go get`:
 ```bash
 go get -u -v github.com/Lofanmi/chinese-calendar-golang/calendar
 ```
