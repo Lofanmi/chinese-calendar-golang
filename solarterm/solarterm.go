@@ -5512,10 +5512,6 @@ var solartermAlias = [...]string{
 	"寒露", "霜降", "立冬", "小雪", "大雪", "冬至",
 }
 
-func init() {
-	time.Local, _ = time.LoadLocation("PRC")
-}
-
 // NewSolarterm 创建节气对象
 func NewSolarterm(index int64) *Solarterm {
 	if !isSupported(index) {
