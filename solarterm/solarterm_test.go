@@ -208,7 +208,7 @@ func TestSpringTimestamp(t *testing.T) {
 
 func TestCalcSolarterm(t *testing.T) {
 	t1 := time.Date(2018, 2, 5, 0, 0, 0, 0, time.Local)
-	t2 := time.Date(2018, 3, 21, 0, 15, 26, 0, time.Local)
+	t2 := time.Date(2018, 3, 21, 0, 15, 28, 0, time.Local)
 	type args struct {
 		t *time.Time
 	}
@@ -219,7 +219,7 @@ func TestCalcSolarterm(t *testing.T) {
 		wantN *Solarterm
 	}{
 		{"test_1", args{&t1}, NewSolarterm(2738), NewSolarterm(2739)},
-		{"test_2", args{&t2}, NewSolarterm(2740), NewSolarterm(2741)},
+		{"test_2", args{&t2}, NewSolarterm(2740), NewSolarterm(2742)},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

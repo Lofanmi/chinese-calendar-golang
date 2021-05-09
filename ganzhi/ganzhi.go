@@ -43,7 +43,7 @@ func NewGanzhi(t *time.Time) *Ganzhi {
 	if n.Index()-p.Index() == 2 {
 		i++
 	}
-	i = utils.OrderMod(int64((i%24)/2), 12)
+	i = utils.OrderMod((i%24)/2, 12)
 
 	monthZhi := zhi.NewZhi(utils.OrderMod(i+2, 12))
 	monthGan := gan.NewGan(utils.OrderMod(i+yearGan.Order()*2, 10))
