@@ -249,3 +249,8 @@ func xxx() {
 # License
 
 MIT
+
+
+## Stargazers over time
+
+[![Stargazers over time](https://starchart.cc/Lofanmi/chinese-calendar-golang.svg)](https://starchart.cc/Lofanmi/chinese-calendar-golang)
