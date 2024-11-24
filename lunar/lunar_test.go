@@ -341,8 +341,8 @@ func Test_lunarDays(t *testing.T) {
 		args     args
 		wantDays int64
 	}{
-		{"test_1", args{2018, 1 - 1}, 0},
-		{"test_2", args{2018, 12 + 1}, 0},
+		{"test_1", args{2018, 1 - 1}, -1},
+		{"test_2", args{2018, 12 + 1}, -1},
 		{"test_3", args{2017, 6}, 29},
 		{"test_3", args{2017, 8}, 30},
 	}
