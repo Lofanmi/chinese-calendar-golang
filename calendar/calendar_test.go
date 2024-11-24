@@ -165,9 +165,6 @@ func TestCalendar_ToJSON(t *testing.T) {
 func TestCalendar_Equals(t *testing.T) {
 	t1 := time.Now().Unix()
 	t2 := time.Now().Add(24 * time.Hour).Unix()
-	type args struct {
-		t *time.Time
-	}
 	tests := []struct {
 		name string
 		c    *Calendar

@@ -292,9 +292,6 @@ func TestGanzhi_HourGanzhiOrder(t *testing.T) {
 func TestGanzhi_Equals(t *testing.T) {
 	t1 := time.Now()
 	t2 := t1.Add(24 * time.Hour)
-	type args struct {
-		t *time.Time
-	}
 	tests := []struct {
 		name string
 		gz   *Ganzhi

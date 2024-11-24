@@ -341,8 +341,8 @@ func Test_lunarDays(t *testing.T) {
 		args     args
 		wantDays int64
 	}{
-		{"test_1", args{2018, 1 - 1}, -1},
-		{"test_2", args{2018, 12 + 1}, -1},
+		{"test_1", args{2018, 0}, -1},
+		{"test_2", args{2018, 13}, -1},
 		{"test_3", args{2017, 6}, 29},
 		{"test_3", args{2017, 8}, 30},
 	}
@@ -358,9 +358,6 @@ func Test_lunarDays(t *testing.T) {
 func TestLunar_Equals(t *testing.T) {
 	t1 := time.Now()
 	t2 := t1.Add(24 * time.Hour)
-	type args struct {
-		t *time.Time
-	}
 	tests := []struct {
 		name   string
 		lunar  *Lunar
