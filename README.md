@@ -1,6 +1,6 @@
 # chinese-calendar-golang
 
-[![Build Status](https://github.com/Lofanmi/chinese-calendar-golang/workflows/Run%20Tests/badge.svg?branch=master)](https://github.com/Lofanmi/chinese-calendar-golang/actions?query=branch%3Amaster)
+[![CI](https://github.com/Lofanmi/chinese-calendar-golang/workflows/Run%20Tests/badge.svg?branch=master)](https://github.com/Lofanmi/chinese-calendar-golang/actions?query=branch%3Amaster)
 [![codecov](https://codecov.io/gh/Lofanmi/chinese-calendar-golang/branch/master/graph/badge.svg)](https://codecov.io/gh/Lofanmi/chinese-calendar-golang)
 [![Go Report Card](https://goreportcard.com/badge/github.com/Lofanmi/chinese-calendar-golang)](https://goreportcard.com/report/github.com/Lofanmi/chinese-calendar-golang)
 [![Go Reference](https://pkg.go.dev/badge/github.com/Lofanmi/chinese-calendar-golang?status.svg)](https://pkg.go.dev/github.com/Lofanmi/chinese-calendar-golang?tab=doc)

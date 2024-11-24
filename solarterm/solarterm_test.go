@@ -258,9 +258,6 @@ func TestSolarterm_IsInDay(t *testing.T) {
 }
 
 func TestSolarterm_Equals(t *testing.T) {
-	type args struct {
-		t *time.Time
-	}
 	tests := []struct {
 		name       string
 		solarterm  *Solarterm

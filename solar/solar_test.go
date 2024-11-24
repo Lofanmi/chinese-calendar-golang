@@ -320,9 +320,6 @@ func TestSolar_GetNanosecond(t *testing.T) {
 func TestSolar_Equals(t *testing.T) {
 	t1 := time.Now()
 	t2 := t1.Add(24 * time.Hour)
-	type args struct {
-		t *time.Time
-	}
 	tests := []struct {
 		name   string
 		solar  *Solar
