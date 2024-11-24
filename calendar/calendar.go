@@ -77,7 +77,6 @@ func (calendar *Calendar) ToJSON() ([]byte, error) {
 	m2["is_leap_month"] = calendar.Lunar.IsLeapMonth()
 	m2["is_leap"] = calendar.Lunar.IsLeap()
 	m2["leap_month"] = calendar.Lunar.LeapMonth()
-	m2["is_leap_month"] = calendar.Lunar.IsLeapMonth()
 	m2["animal"] = calendar.Lunar.Animal().Alias()
 	m2["year_alias"] = calendar.Lunar.YearAlias()
 	m2["month_alias"] = calendar.Lunar.MonthAlias()

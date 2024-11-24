@@ -1,8 +1,11 @@
 # chinese-calendar-golang
 
-[![Build Status](https://travis-ci.org/Lofanmi/chinese-calendar-golang.svg)](https://travis-ci.org/Lofanmi/chinese-calendar-golang)
+[![Build Status](https://github.com/Lofanmi/chinese-calendar-golang/workflows/Run%20Tests/badge.svg?branch=master)](https://github.com/Lofanmi/chinese-calendar-golang/actions?query=branch%3Amaster)
 [![codecov](https://codecov.io/gh/Lofanmi/chinese-calendar-golang/branch/master/graph/badge.svg)](https://codecov.io/gh/Lofanmi/chinese-calendar-golang)
 [![Go Report Card](https://goreportcard.com/badge/github.com/Lofanmi/chinese-calendar-golang)](https://goreportcard.com/report/github.com/Lofanmi/chinese-calendar-golang)
+[![Go Reference](https://pkg.go.dev/badge/github.com/Lofanmi/chinese-calendar-golang?status.svg)](https://pkg.go.dev/github.com/Lofanmi/chinese-calendar-golang?tab=doc)
+[![Sourcegraph](https://sourcegraph.com/github.com/Lofanmi/chinese-calendar-golang/-/badge.svg)](https://sourcegraph.com/github.com/Lofanmi/chinese-calendar-golang?badge)
+[![Open Source Helpers](https://www.codetriage.com/lofanmi/chinese-calendar-golang/badges/users.svg)](https://www.codetriage.com/Lofanmi/chinese-calendar-golang)
 
 公历, 农历, 干支历转换包, 提供精确的日历转换.
 
@@ -11,8 +14,6 @@
 觉得**好用**, 而不是觉得**有用**. 如果不好用, 欢迎向我提 issue, 我会抽空不断改进它!
 
 真希望有人打钱打钱打钱给我啊哈哈哈哈!!!
-
-Go 1.7 ~ Go 1.16 测试通过( [理论上支持所有的 Go 版本，请查看构建详情](https://travis-ci.org/Lofanmi/chinese-calendar-golang) ), Go 1.6 及以下应该也可以, 不过单元测试跑不了.
 
 # 如何安装
 
