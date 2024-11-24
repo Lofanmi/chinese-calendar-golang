@@ -40,7 +40,7 @@ func DD(jd float64) (_Y, _M, _D, _h, _m, _s int) {
 		_M -= 13
 		_Y -= 4715
 	} else {
-		_M -= 1
+		_M--
 		_Y -= 4716
 	}
 
