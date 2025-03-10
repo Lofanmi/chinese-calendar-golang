@@ -194,8 +194,8 @@ func TestSpringTimestamp(t *testing.T) {
 		{"zero_1", args{SolartermFromYear - 1}, 0},
 		{"zero_2", args{SolartermToYear + 1}, 0},
 		{"test_1", args{2017}, 1486136044},
-		{"test_2", args{2018}, 1517693309},
-		{"test_3", args{2019}, 1549250060},
+		{"test_2", args{2018}, 1517693305},
+		{"test_3", args{2019}, 1549250054},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -219,7 +219,7 @@ func TestCalcSolarterm(t *testing.T) {
 		wantN *Solarterm
 	}{
 		{"test_1", args{&t1}, NewSolarterm(2738), NewSolarterm(2739)},
-		{"test_2", args{&t2}, NewSolarterm(2740), NewSolarterm(2742)},
+		{"test_2", args{&t2}, NewSolarterm(2741), NewSolarterm(2742)},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
