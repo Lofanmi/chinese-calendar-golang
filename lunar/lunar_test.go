@@ -61,9 +61,9 @@ func TestToSolarTimestamp(t *testing.T) {
 		{"test_2", args{2018, 2, 14, 23, 11, 30, true}, 1522422690},
 		{"test_3", args{2018, 2, 14, 23, 11, 30, false}, 1522422690},
 		{"test_4", args{1900, 1, 14, 23, 11, 30, false}, 0},
-		{"test_5", args{2100, 12, 14, 23, 11, 30, false}, 0},
+		{"test_5", args{3000, 12, 14, 23, 11, 30, false}, 0},
 		{"test_6", args{1900 - 1, 1, 14, 23, 11, 30, false}, 0},
-		{"test_7", args{2100 + 1, 12, 14, 23, 11, 30, false}, 0},
+		{"test_7", args{3000 + 1, 12, 14, 23, 11, 30, false}, 0},
 		{"test_8", args{1900, 2, 100000, 23, 11, 30, false}, 0},
 	}
 	for _, tt := range tests {
@@ -312,6 +312,8 @@ func TestLunar_GetDay(t *testing.T) {
 	t2 := time.Date(2017, 6, 4, 0, 0, 0, 0, time.Local)
 	t3 := time.Date(2017, 6, 14, 0, 0, 0, 0, time.Local)
 	t4 := time.Date(2017, 8, 21, 0, 0, 0, 0, time.Local)
+	t5 := time.Date(2057, 9, 28, 0, 0, 0, 0, time.Local)
+	t6 := time.Date(2057, 10, 27, 0, 0, 0, 0, time.Local)
 	tests := []struct {
 		name      string
 		lunar     *Lunar
@@ -320,7 +322,9 @@ func TestLunar_GetDay(t *testing.T) {
 		{"test_1", NewLunar(&t1), 16},
 		{"test_2", NewLunar(&t2), 10},
 		{"test_3", NewLunar(&t3), 20},
-		{"test_33", NewLunar(&t4), 30},
+		{"test_4", NewLunar(&t4), 30},
+		{"test_5", NewLunar(&t5), 1},  // 2057-09-28（九月初一）
+		{"test_6", NewLunar(&t6), 30}, // 2057-10-27（九月三十）
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

@@ -204,7 +204,7 @@ func FromSolarTimestamp(ts int64) (lunarYear, lunarMonth, lunarDay int64, lunarM
 		offset -= daysOfMonth
 	}
 	// offset 为 0 时, 并且刚才计算的月份是闰月, 要校正
-	if 0 == offset && leap > 0 && i == leap+1 {
+	if offset == 0 && leap > 0 && i == leap+1 {
 		if isLeap {
 			isLeap = false
 		} else {
@@ -232,17 +232,17 @@ func ToSolarTimestamp(year, month, day, hour, minute, second int64, isLeapMonth 
 		i, offset int64
 	)
 	// 参数合法性效验
-	if year < 1900 || year > 2100 {
+	if year < 1900 || year > 3000 {
 		return 0
 	}
-	// 参数区间 1900.1.31~2100.12.1
+	// 参数区间 1900.1.31~3000.12.1
 	m := leapMonth(year)
 	// 传参要求计算该闰月公历 但该年得出的闰月与传参的月份并不同
 	if isLeapMonth && (m != month) {
 		isLeapMonth = false
 	}
 	// 超出了最大极限值
-	if 2100 == year && 12 == month && day > 1 || 1900 == year && 1 == month && day < 31 {
+	if year == 3000 && month == 12 && day > 1 || year == 1900 && month == 1 && day < 31 {
 		return 0
 	}
 	days := lunarDays(year, month)
