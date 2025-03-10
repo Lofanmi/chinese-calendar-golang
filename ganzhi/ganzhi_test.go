@@ -16,9 +16,9 @@ func TestNewGanzhi(t *testing.T) {
 	t1 := time.Date(solarterm.SolartermFromYear-1, 6, 1, 0, 0, 0, 0, time.Local)
 	t2 := time.Date(solarterm.SolartermToYear+1, 6, 1, 0, 0, 0, 0, time.Local)
 	t3 := time.Date(2018, 1, 1, 0, 0, 0, 0, time.Local)
-	t4 := time.Date(2018, 2, 4, 5, 28, 28, 0, time.Local)
-	t5 := time.Date(2018, 2, 4, 5, 28, 29, 0, time.Local)
-	t6 := time.Date(2018, 2, 4, 5, 28, 30, 0, time.Local)
+	t4 := time.Date(2018, 2, 4, 5, 28, 24, 0, time.Local)
+	t5 := time.Date(2018, 2, 4, 5, 28, 25, 0, time.Local)
+	t6 := time.Date(2018, 2, 4, 5, 28, 26, 0, time.Local)
 	maker := func(t *time.Time, yg, yz, mg, mz, dg, dz, hg, hz, p, n int64) *Ganzhi {
 		return &Ganzhi{
 			t:             t,
