@@ -169,7 +169,7 @@ func FromSolarTimestamp(ts int64) (lunarYear, lunarMonth, lunarDay int64, lunarM
 	t2 := time.Date(1900, 1, 31, 0, 0, 0, 0, time.UTC)
 	offset = (t1.Unix() - t2.Unix()) / 86400
 
-	for i = 1900; i < 2101 && offset > 0; i++ {
+	for i = 1900; i <= 3000 && offset > 0; i++ {
 		daysOfYear = daysOfLunarYear(i)
 		offset -= daysOfYear
 	}

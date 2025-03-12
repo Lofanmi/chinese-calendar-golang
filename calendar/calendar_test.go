@@ -1,13 +1,16 @@
 package calendar
 
 import (
+	"fmt"
 	"reflect"
+	"strings"
 	"testing"
 	"time"
 
 	"github.com/Lofanmi/chinese-calendar-golang/ganzhi"
 	"github.com/Lofanmi/chinese-calendar-golang/lunar"
 	"github.com/Lofanmi/chinese-calendar-golang/solar"
+	"github.com/Lofanmi/chinese-calendar-golang/solarterm"
 )
 
 var equals = func(a, b *Calendar) bool {
@@ -181,4 +184,43 @@ func TestCalendar_Equals(t *testing.T) {
 			}
 		})
 	}
+}
+
+func TestCalendar(t *testing.T) {
+	time.Local, _ = time.LoadLocation("PRC")
+	t.Log(output(2025))
+	t.Log(output(3000))
+}
+
+func output(year int) string {
+	timeLayoutYMD := "2006-01-02"
+	weekdays := []string{"周日", "周一", "周二", "周三", "周四", "周五", "周六"}
+
+	var sb strings.Builder
+	_, _ = sb.WriteString("\n")
+	_, _ = sb.WriteString("公历日期   周   农历日期         干支               节气\n")
+	_, _ = sb.WriteString("----------------------------------------------------------------------------\n")
+	ti := time.Date(year, 1, 1, 0, 0, 0, 0, time.Local)
+	for {
+		if ti.Year() > year {
+			break
+		}
+		c := ByTimestamp(ti.Unix())
+		solarDate := ti.Format(timeLayoutYMD)
+		weekday := weekdays[int(ti.Weekday())]
+		lunarDate := fmt.Sprintf("%d%s年%s%s", c.Lunar.GetYear(), c.Lunar.Animal().Alias(), c.Lunar.MonthAlias(), c.Lunar.DayAlias())
+		gzDate := fmt.Sprintf("%s年%s月%s日", c.Ganzhi.YearGanzhiAlias(), c.Ganzhi.MonthGanzhiAlias(), c.Ganzhi.DayGanzhiAlias())
+		stInfo := ""
+		p, n := solarterm.CalcSolarterm(&ti)
+		if p != nil && p.Time().Format(timeLayoutYMD) == solarDate {
+			stInfo = fmt.Sprintf("%s %s", p.Alias(), p.Time().Format("2006-01-02 15:04:05"))
+		}
+		if n != nil && n.Time().Format(timeLayoutYMD) == solarDate {
+			stInfo = fmt.Sprintf("%s %s", n.Alias(), n.Time().Format("2006-01-02 15:04:05"))
+		}
+		_, _ = sb.WriteString(fmt.Sprintf("%s %s %s %s %s\n", solarDate, weekday, lunarDate, gzDate, stInfo))
+		ti = ti.AddDate(0, 0, 1)
+	}
+
+	return sb.String()
 }

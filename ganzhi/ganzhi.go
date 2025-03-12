@@ -49,7 +49,7 @@ func NewGanzhi(t *time.Time) *Ganzhi {
 	monthGan := gan.NewGan(utils.OrderMod(i+yearGan.Order()*2, 10))
 
 	begin := time.Date(solarterm.SolartermFromYear, 1, 1, 0, 0, 0, 0, time.Local)
-	seconds := t.Sub(begin).Seconds()
+	seconds := t.Unix() - begin.Unix()
 	dayOrder := utils.OrderMod(int64(seconds/86400)+31, 60)
 
 	dayGan := gan.NewGan(utils.OrderMod(dayOrder, 10))
@@ -127,7 +127,7 @@ func (gz *Ganzhi) Equals(b *Ganzhi) bool {
 }
 
 func isSupported(year int64) bool {
-	return solarterm.SolartermFromYear <= year && year < solarterm.SolartermToYear
+	return solarterm.SolartermFromYear <= year && year <= solarterm.SolartermToYear
 }
 
 func ganzhiOrder(ganOrder, zhiOrder int64) int64 {

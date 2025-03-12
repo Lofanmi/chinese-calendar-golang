@@ -1,9 +1,13 @@
 package solarterm
 
 import (
+	"fmt"
 	"reflect"
+	"strings"
 	"testing"
 	"time"
+
+	"github.com/Lofanmi/chinese-calendar-golang/utils"
 )
 
 func minIndex() int64 {
@@ -209,6 +213,7 @@ func TestSpringTimestamp(t *testing.T) {
 func TestCalcSolarterm(t *testing.T) {
 	t1 := time.Date(2018, 2, 5, 0, 0, 0, 0, time.Local)
 	t2 := time.Date(2018, 3, 21, 0, 15, 28, 0, time.Local)
+	t3 := time.Date(2025, 2, 3, 22, 10, 13, 0, time.Local)
 	type args struct {
 		t *time.Time
 	}
@@ -220,6 +225,7 @@ func TestCalcSolarterm(t *testing.T) {
 	}{
 		{"test_1", args{&t1}, NewSolarterm(2738), NewSolarterm(2739)},
 		{"test_2", args{&t2}, NewSolarterm(2741), NewSolarterm(2742)},
+		{"test_3", args{&t3}, NewSolarterm(2906), NewSolarterm(2907)},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -274,4 +280,27 @@ func TestSolarterm_Equals(t *testing.T) {
 			}
 		})
 	}
+}
+
+func TestSolartermAnything(t *testing.T) {
+	var sb strings.Builder
+	_, _ = sb.WriteString("\n")
+	year := 2025
+	// year := 2999 // 最大2999年
+	index := (year - 1904) * 24
+	pos := 2
+	solarterms := solartermJ2000[index+pos : index+pos+24]
+	solartermAlias2 := append(solartermAlias[pos:], solartermAlias[:pos]...)
+	jd2ts := func(jd float64) int64 {
+		y, m, d, h, i, s := utils.DD(jd)
+		return time.Date(y, time.Month(m), d, h, i, s, 0, time.Local).Unix()
+	}
+	for i := 0; i < 24-1; i++ {
+		a, b := solartermAlias2[i], solartermAlias2[i+1]
+		m, n := jd2ts(solarterms[i]), jd2ts(solarterms[i+1])
+		x, y := time.Unix(m, 0).Format("2006-01-02 15:04:05"), time.Unix(n, 0).Format("2006-01-02 15:04:05")
+		k := (float64(n) - float64(m)) / 86400
+		_, _ = sb.WriteString(fmt.Sprintf("%d年 [%s]~[%s] 相差 %.6f 天(%d秒) [%s]~[%s]\n", year, a, b, k, n-m, x, y))
+	}
+	t.Log(sb.String())
 }
